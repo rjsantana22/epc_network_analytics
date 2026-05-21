@@ -15,10 +15,11 @@ ENV PATH="/app/.venv/bin:$PATH"
 COPY pyproject.toml .
 
 # Instalar dependencias con uv
+RUN mkdir -p /app/data/raw
 RUN uv sync
 
 # Copiar código de la aplicación
 COPY generator.py .
 
 # Punto de entrada para pasar argumentos
-ENTRYPOINT [ "uv", "run", "python", "generator.py", "-h"]
+ENTRYPOINT [ "uv", "run", "python", "generator.py","--mode","continuous"]

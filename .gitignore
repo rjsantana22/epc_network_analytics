@@ -9,6 +9,11 @@ __pycache__/
 *.json
 
 # Distribution / packaging
+LICENSE.txt
+terraform-provider-google_v7.32.0_x5
+*.lock.hcl
+*.backup
+*.tfstate
 .Python
 build/
 develop-eggs/

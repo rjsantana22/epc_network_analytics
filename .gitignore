@@ -3,6 +3,8 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+pipeline/
+
 # C extensions
 *.so
 *.parquet
@@ -32,7 +34,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-pipeline/
+
 
 # PyInstaller
 #   Usually these files are written by a python script from a template

@@ -27,6 +27,4 @@ into the docker compose
               model-name: gemini-2.5-flash
               api-key: ${GEMINI_API_KEY}
 
-export GEMINI_API_KEY="AQ.Ab8RN6KjRDoTk4sBFEVuY7wRSASw_KEfonm14IGlBBvmVevGSw"
-
 

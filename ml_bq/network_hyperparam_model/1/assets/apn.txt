@@ -1,0 +1,8 @@
+internet.mcc12.mnc234.gprs
+fwa.mcc10.mnc234.gprs
+internet.mcc13.mnc234.gprs
+vpn.mcc10.mnc234.gprs
+ims.mcc10.mnc234.gprs
+mms.mcc10.mnc234.gprs
+internet.mcc10.mnc234.gprs
+internet.mcc11.mnc234.gprs

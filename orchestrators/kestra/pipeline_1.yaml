@@ -1,0 +1,60 @@
+id: salmon_421537
+namespace: company.team
+
+tasks:
+  - id: process_with_python
+    type: io.kestra.plugin.scripts.python.Script
+    namespaceFiles:
+      enabled: true
+    beforeCommands:
+      - pip install pandas
+    outputFiles:
+      - "resultado_final.csv"
+    script: |
+      import pandas as pd
+      import json
+
+      print("--- Iniciando proceso en Python ---")
+      archivo_origen = "events_20260322_225657_batch0003.json"
+      
+      try:
+          with open(archivo_origen, 'r', encoding='utf-8') as f:
+              data = json.load(f)
+          
+          # Convertir a DataFrame y aplanar si viene anidado
+          df = pd.json_normalize(data)
+          
+          # Guardar como CSV
+          output_csv = "resultado_final.csv"
+          df.to_csv(output_csv, index=False, encoding='utf-8')
+          print(f"Archivo exportado correctamente como {output_csv}")
+
+      except Exception as e:
+          print(f"Error: {e}")
+          raise e
+
+  - id: upload_csv_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    # Conectamos el output del script de Python usando su ID de tarea
+    from: "{{ outputs.process_with_python.outputFiles['resultado_final.csv'] }}"
+    to: "gs://{{ kv('GCP_BUCKET_NAME') }}/events_processed.csv"
+
+  - id: load_csv_to_bigquery
+    type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
+    from:
+      - "{{ outputs.upload_csv_to_gcs.uri }}"
+    destinationTable: "{{ kv('GCP_PROJECT_ID') }}.{{ kv('GCP_DATASET') }}.events_epc_network"
+    # Cambiamos el formato a CSV ya que Python lo transformó
+    format: CSV
+    autodetect: true
+    # Opcional: Si tu CSV tiene fila de encabezados (generada por pandas), indícalo aquí
+    csvOptions:
+      skipLeadingRows: 1
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{ kv('GCP_CREDS') }}"
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      location: "{{ kv('GCP_LOCATION') }}"
+      bucket: "{{ kv('GCP_BUCKET_NAME') }}"

@@ -1,0 +1,111 @@
+id: pipeline_load_to_gcs
+namespace: company.team
+
+tasks:
+  - id: list_raw_data_files
+    type: io.kestra.plugin.scripts.python.Commands
+    runner: PROCESS
+    commands:
+      - |
+        python3 -c "
+        import os
+        ruta = '/app/data/raw'
+        if os.path.exists(ruta):
+          archivos = os.listdir(ruta)
+          print('✅ ¡Conexión local exitosa! Archivos encontrados:', archivos)
+          # guardar lista en un archivo para auditoría
+          with open('raw_files_list.txt', 'w', encoding='utf-8') as fh:
+            for a in archivos:
+              fh.write(a + '\n')
+        else:
+            print('❌ El proceso interno tampoco logra ver la ruta')
+        "
+  - id: process_with_python
+    type: io.kestra.plugin.scripts.python.Commands
+    runner: PROCESS
+    commands:
+      - pip install pandas
+      - |
+        python3 - <<'PY'
+        import pandas as pd
+        import json
+        import os
+
+        print("--- Iniciando proceso en Python ---")
+        input_dir = '/app/data/raw'
+
+        if not os.path.isdir(input_dir):
+            raise FileNotFoundError(f"Directorio de entrada no encontrado: {input_dir}")
+
+        json_files = [f for f in os.listdir(input_dir) if f.lower().endswith('.json')]
+
+        if not json_files:
+            print('No se encontraron archivos JSON en', input_dir)
+        else:
+            dfs = []
+            csv_files = []
+            for fname in json_files:
+                path = os.path.join(input_dir, fname)
+                try:
+                    with open(path, 'r', encoding='utf-8') as fh:
+                        data = json.load(fh)
+                    if isinstance(data, list):
+                        df = pd.json_normalize(data)
+                    else:
+                        df = pd.json_normalize([data])
+                    df['source_file'] = fname
+                    dfs.append(df)
+                    out_csv = os.path.splitext(fname)[0] + '.csv'
+                    df.to_csv(out_csv, index=False, encoding='utf-8')
+                    csv_files.append(out_csv)
+                    print(f'Generado CSV: {out_csv} filas={len(df)}')
+                except Exception as e:
+                    print(f'Error procesando {fname}: {e}')
+
+            # archivo combinado
+            if dfs:
+                final_df = pd.concat(dfs, ignore_index=True)
+                output_csv = 'resultado_final.csv'
+                final_df.to_csv(output_csv, index=False, encoding='utf-8')
+                print(f'Archivo combinado creado: {output_csv} con filas totales={len(final_df)}')
+            else:
+                print('No se generaron DataFrames a partir de los JSON')
+
+            # guardar lista de CSVs generados y lista de raw files
+            with open('csv_files_list.txt', 'w', encoding='utf-8') as ch:
+                for c in csv_files:
+                    ch.write(c + '\n')
+            with open('raw_files_list.txt', 'w', encoding='utf-8') as rh:
+                for r in json_files:
+                    rh.write(r + '\n')
+        PY
+    outputFiles:
+      - "resultado_final.csv"
+      - "csv_files_list.txt"
+      - "raw_files_list.txt"
+
+  - id: upload_csv_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    # Conectamos el output del script de Python usando su ID de tarea
+    from: "{{ outputs.process_with_python.outputFiles['resultado_final.csv'] }}"
+    to: "gs://{{ kv('GCP_BUCKET_NAME') }}/events_processed.csv"
+
+  - id: load_csv_to_bigquery
+    type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
+    from:
+      - "{{ outputs.upload_csv_to_gcs.uri }}"
+    destinationTable: "{{ kv('GCP_PROJECT_ID') }}.{{ kv('GCP_DATASET') }}.events_epc_network"
+    # Cambiamos el formato a CSV ya que Python lo transformó
+    format: CSV
+    autodetect: true
+    # Opcional: Si tu CSV tiene fila de encabezados (generada por pandas), indícalo aquí
+    csvOptions:
+      skipLeadingRows: 1
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{ kv('GCP_CREDS') }}"
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      location: "{{ kv('GCP_LOCATION') }}"
+      bucket: "{{ kv('GCP_BUCKET_NAME') }}"
+

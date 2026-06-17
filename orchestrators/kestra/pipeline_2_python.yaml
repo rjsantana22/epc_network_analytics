@@ -1,0 +1,17 @@
+id: jay_211663
+namespace: company.team
+
+tasks:
+  - id: list_raw_data_files
+    type: io.kestra.plugin.scripts.python.Commands
+    runner: PROCESS
+    commands:
+      - |
+        python3 -c "
+        import os
+        ruta = '/app/data/raw'
+        if os.path.exists(ruta):
+            print('✅ ¡Conexión local exitosa! Archivos:', os.listdir(ruta))
+        else:
+            print('❌ El proceso interno tampoco logra ver la ruta')
+        "

@@ -22,4 +22,4 @@ RUN uv sync
 COPY generator.py .
 
 # Punto de entrada para pasar argumentos
-ENTRYPOINT [ "uv", "run", "python", "generator.py","--mode","continuous"]
+#ENTRYPOINT [ "uv", "run", "python", "generator.py","--mode","continuous"]

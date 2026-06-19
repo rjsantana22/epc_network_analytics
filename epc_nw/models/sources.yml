@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw_epc
+    database: careful-airfoil-367403 # Or name of your GCP project
+    schema: demo_dataset # Or name of your BigQuery dataset
+    description: "Datos raw de eventos de red EPC"
+    tables:
+      - name: events_epc_network
+        description: "Eventos raw generados por el generador EPC Docker"

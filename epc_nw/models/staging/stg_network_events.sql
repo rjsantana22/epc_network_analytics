@@ -11,7 +11,12 @@ with raw as (
         imsi,
         mme_id,
         cause_code,
-        duration_ms
+        duration_ms,
+        tracking_area,
+        cell_id,
+        apn,
+        plmn_id,
+        result
     from {{ source('raw_epc', 'events_epc_network') }}
 ),
 
@@ -23,7 +28,12 @@ cleaned as (
         imsi,
         mme_id,
         safe_cast(regexp_extract(cause_code, r'^(\d+)') as int64) as cause_code,
-        cast(duration_ms as int64) as duration_ms
+        cast(duration_ms as int64) as duration_ms,
+        tracking_area,
+        cell_id,
+        apn,
+        plmn_id,
+        result  
     from raw
     where
         event_id is not null

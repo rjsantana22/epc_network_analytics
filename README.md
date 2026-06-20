@@ -73,4 +73,14 @@ touch models/marts/fct_sessions.sql
 
 dbt docs generate
 dbt docs serve
+
+# packages.yml
+packages:
+  - package: dbt-labs/dbt_utils
+    version: 1.1.1
+
+dbt deps          # instala el paquete
+dbt run --select dim_apn   # materializa solo la dimensión
+dbt test --select dim_apn  # corre los tests
+pip install dbt-utils
 ```

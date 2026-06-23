@@ -1,0 +1,23 @@
+version: 2
+models:
+  - name: fct_event_by_area
+    description: "Hechos de eventos agrupados por área"
+    columns:
+      - name: event_type
+        data_tests:
+          - not_null
+      - name: result
+        data_tests:
+          - not_null
+      - name: session_date
+        data_tests:
+          - not_null
+      - name: tac
+        data_tests:
+          - not_null
+      - name: cell_id
+        data_tests:
+          - not_null
+      - name: total_events
+        data_tests:
+          - not_null

@@ -1,0 +1,24 @@
+version: 2
+models:
+  - name: fct_sessions
+    description: "Hechos de sesiones agrupadas por APN"
+    columns:
+      - name: imsi
+        data_tests:
+          - not_null
+      - name: mme_id
+        data_tests:
+          - not_null
+      - name: session_date
+        data_tests:
+          - not_null
+      - name: total_events
+        data_tests:
+          - not_null
+      - name: attach_count
+        data_tests:
+          - not_null
+      - name: detach_count
+      - name: total_session_duration_seconds
+        data_tests:
+          - not_null

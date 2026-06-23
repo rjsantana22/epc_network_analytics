@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_network_events
+    description: "Vista staging: eventos limpios y validados"
+    columns:
+      - name: event_id
+        data_tests:
+          - not_null
+      - name: event_timestamp
+        data_tests:
+          - not_null
+      - name: event_type
+        data_tests:
+          - not_null
+      - name: imsi
+        data_tests:
+          - not_null
+      - name: mme_id
+        data_tests:
+          - not_null
+      - name: cause_code
+        data_tests:
+          - not_null
+      - name: tracking_area,
+      - name: cell_id
+        data_tests:
+          - not_null
+      - name: apn
+        data_tests:
+          - not_null
+      - name: plmn_id
+        data_tests:
+          - not_null
+      - name: result
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['success', 'failure']    

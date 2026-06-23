@@ -1,0 +1,17 @@
+version: 2
+models:
+  - name: fct_event_by_event
+    description: "Hechos de eventos agrupados por evento"
+    columns:
+      - name: plmn_id
+        data_tests:
+          - not_null
+      - name: cause_code
+        data_tests:
+          - not_null
+      - name: event_date
+        data_tests:
+          - not_null
+      - name: total_events
+        data_tests:
+          - not_null

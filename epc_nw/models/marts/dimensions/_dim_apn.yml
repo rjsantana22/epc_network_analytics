@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: dim_apn
+    description: "Dimensión de APN (Access Point Name)"
+    columns:
+      - name: apn_key
+        data_tests:
+          - not_null
+      - name: apn_name
+        data_tests:
+          - not_null
+      - name: is_active
+        data_tests:
+          - not_null
+
+      - name: loaded_at
+        data_tests:
+          - not_null

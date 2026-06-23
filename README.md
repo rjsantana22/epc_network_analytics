@@ -83,4 +83,8 @@ dbt deps          # instala el paquete
 dbt run --select dim_apn   # materializa solo la dimensión
 dbt test --select dim_apn  # corre los tests
 pip install dbt-utils
+
+dbt test
+dbt build
+
 ```

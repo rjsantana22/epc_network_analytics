@@ -30,3 +30,8 @@ variable "gcs_storge_class" {
     description = "Bucket Storage Class"
     default = "STANDARD" 
 }
+
+variable "dataproc_name" {
+  description = "My Dataproc cluster name."
+  default     = "epc-dataproc-cluster"
+}

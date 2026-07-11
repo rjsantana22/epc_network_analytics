@@ -19,12 +19,12 @@ variable "location" {
 
 variable "bq_dataset_name" {
   description = "My BigQuery dataset name."
-  default     = "demo_dataset"
+  default     = "epc_network_warehouse"
 }
 
 variable "gcs_bucket_name" {
   description = "My storage Bucket name"
-  default     = "careful-airfoil-367403-terra-bucket"
+  default     = "epc_network_bucket"
 }
 variable "gcs_storge_class" {
     description = "Bucket Storage Class"

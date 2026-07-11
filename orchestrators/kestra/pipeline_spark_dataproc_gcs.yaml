@@ -1,0 +1,51 @@
+id: dataproc_pipeline
+namespace: company.team
+description: Create a Dataproc cluster, upload a Python file, run a PySpark job, and delete the cluster.
+
+
+triggers:
+  - id: trigger_pipe_load_to_gcs
+    type: io.kestra.plugin.core.trigger.Flow
+    # Se ejecuta cuando los siguientes flujos cumplen estas condiciones
+    preconditions:
+      id: flows
+      flows:
+        - namespace: company.team
+          flowId: pipe_load_to_gcs
+          states: [SUCCESS]
+inputs:
+  - id: myfile
+    type: FILE
+    defaults: nsfile:///pipeline_gcs_bronze_silver.py
+tasks:
+    - id: write_file_to_internal_storage
+      type: io.kestra.plugin.core.storage.Write
+      content: "{{ read('pipeline_gcs_bronze_silver.py') }}"
+      extension: ".py" # Le damos la extensión explícitamente para evitar fallos
+    - id: upload_python_file_to_gcs
+      type: io.kestra.plugin.gcp.gcs.Upload
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      # Al estar dentro de WorkingDirectory, usamos la expresión de Kestra para obtener la ruta absoluta del archivo local
+      from: "{{ outputs.write_file_to_internal_storage.uri }}"
+      to: "gs://{{ kv('GCP_BUCKET_NAME') }}/code/{{ kv('GCP_PYTHON_FILE_NAME') }}"
+
+    - id: run_pyspark_batch
+      type: io.kestra.plugin.gcp.dataproc.batches.PySparkSubmit
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      region: "{{ kv('GCP_REGION') }}"
+      name: "batch-pyspark-job"
+      mainPythonFileUri: "gs://{{ kv('GCP_BUCKET_NAME') }}/code/{{ kv('GCP_PYTHON_FILE_NAME') }}"
+      args:
+         - "--input_epc_network=gs://epc_network_bucket/bronze/batch/raw_cdrs/*.json"
+         - "--output=gs://epc_network_bucket/silver_cdrs/batch/"
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{ kv('GCP_CREDS') }}"
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      location: "{{ kv('GCP_LOCATION') }}"
+      bucket: "{{ kv('GCP_BUCKET_NAME') }}"
+      region: "{{ kv('GCP_REGION') }}"
+      clusterName: "{{ kv('GCP_CLUSTER_NAME') }}"
+      pythonFilename: "{{ kv('GCP_PYTHON_FILE_NAME') }}"

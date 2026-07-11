@@ -4,7 +4,8 @@ __pycache__/
 *$py.class
 
 pipeline/
-
+backup/
+ml_bq/
 # C extensions
 *.so
 *.parquet

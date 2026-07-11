@@ -1,0 +1,41 @@
+id: pipeline_silverzone_to_bq
+namespace: company.team
+
+triggers:
+  - id: trigger_dataproc_pipeline
+    type: io.kestra.plugin.core.trigger.Flow
+    # Se ejecuta cuando los siguientes flujos cumplen estas condiciones
+    preconditions:
+      id: flows
+      flows:
+        - namespace: company.team
+          flowId: dataproc_pipeline
+          states: [SUCCESS]
+
+tasks:
+  - id: start_export
+    type: io.kestra.plugin.core.log.Log
+    message: Starting GCS to BigQuery export...
+
+  - id: load_gcs_to_bigquery
+    type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
+    from:
+      - "gs://{{ kv('GCP_BUCKET_NAME') }}/silver_cdrs/batch/*.parquet" # Replace with your GCS path
+    destinationTable: "{{ kv('GCP_PROJECT_ID') }}.{{ kv('GCP_DATASET') }}.cdrs_epc_network"
+    # Replace with your BigQuery table
+    format: PARQUET
+    autodetect: true
+    writeDisposition: WRITE_TRUNCATE # Or WRITE_APPEND, WRITE_EMPTY
+    createDisposition: CREATE_IF_NEEDED
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      dataset: "{{ kv('GCP_DATASET') }}"
+      serviceAccount: "{{ kv('GCP_CREDS') }}"
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      location: "{{ kv('GCP_LOCATION') }}"
+      bucket: "{{ kv('GCP_BUCKET_NAME') }}"
+      region: "{{ kv('GCP_REGION') }}"
+      clusterName: "{{ kv('GCP_CLUSTER_NAME') }}"
+      pythonFilename: "{{ kv('GCP_PYTHON_FILE_NAME') }}"

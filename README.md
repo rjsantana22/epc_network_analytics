@@ -143,3 +143,9 @@ epc_network_analytics/
 ├── data_warehouse/        # BigQuery table setup.
 ├── terraform/             # IaC for GCS + BigQuery.
 ```
+
+
+---
+## Dashboard
+
+This section it will add in the future.

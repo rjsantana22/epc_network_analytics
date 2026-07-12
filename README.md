@@ -156,3 +156,36 @@ epc_network_analytics/
 
 This section it will add in the future.
 
+
+---
+
+## 🤝 Contribuciones
+
+Este es un proyecto de portafolio personal. Si tienes sugerencias o encuentras bugs, feel free to:
+
+1. Fork el proyecto
+2. Crear una rama con tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
+---
+## 📄 License
+
+This project is above MIT License - Look the [LICENSE](LICENSE) file for more details.
+
+---
+## Autor
+
+**Raul Santana**
+- Packet Core Specialist | EPC network | Data Engineering | Ericsson Stack
+- LinkedIn: [ingraulsantana](https://linkedin.com/in/ingraulsantana)
+- GitHub: [@redbull123](https://github.com/redbull123)
+- Email: rjsantana95@gmail.com
+
+---
+## Acknowledgments
+
+- Synthetic Dataset inspire in 3GPP TS 23.401 (GPRS enhancements for E-UTRAN access).
+---
+
+⚠️ **Note:** This project use synthetic data. This doesn't contain real information or confidential of neither telecomunication networks.

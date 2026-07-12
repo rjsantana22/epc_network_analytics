@@ -61,7 +61,7 @@ flowchart TD
         T --> E
     end
 ```
-![Arquitectura](./architecture.svg)
+![[architecture.svg]]
 
 ---
 
@@ -75,6 +75,71 @@ flowchart TD
 | **Processing**             | Apache Spark on Dataproc (ephemeral cluster, managed by Kestra) |
 | **Data Warehouse**         | Google BigQuery                                                 |
 | **Transformations**        | dbt Core                                                        |
-| **Visualization**          | Looker Studio                                                   |
+| **Visualization**          | Data Studio                                                   |
 | **Containerization**       | Docker Compose                                                  |
 
+
+---
+## How to Run It
+
+### Prerequisites
+
+- **Docker Desktop** installed and running
+- A **GCP Service Account** JSON key saved as `creds/gcp-key.json`
+- **Python** 3.11+ 
+- **Terraform**
+
+### 1. Start Infrastructure
+
+Boot up Kestra:
+
+```shell
+docker-compose up -d
+```
+
+### 2. Provision Cloud Resources
+
+```shell
+cd terraform-env
+terraform init
+terraform plan
+terraform apply # -auto-approve
+cd ..
+```
+
+### 3. **`generator`** Container — generates 1K synthetic events by Batch.
+
+```Shell
+cd datasets_generator
+docker build -t generate:python .
+docker run -it -v raw_data:/app/data/raw --rm generate:python 
+```
+### 4. Run the Pipeline
+
+Then, open the Kestra UI at [http://localhost:8080](http://localhost:8080/) and execute:
+
+1. **`pipeline_load_to_gcs`** — Init the pipeline by trigger each 15min, load the synthetic events network from source data to GCS (Raw - Bronze zone).
+2. **`pipeline_spark_dataproc_gcs`** — These start after `pipeline_load_to_gcs` flow, processed data from **Bronze zone** to **Silver zone** in **GCS**.
+3. **`pipeline_silverzone_to_bq`** — start after `pipeline_spark_dataproc_gcs` flow, load the parquet file from **Silver zone** to tables in **Bigquery**.
+4. **`pipeline_run_dbt`** — start after `pipeline_silverzone_to_bq` flow, modeling the table to fact and dimension tables.
+
+### 5. Look the data in Data Studio (Looker Studio) 
+
+this point it will be define in other moment....
+
+---
+## Project Structure
+
+
+```
+epc_network_analytics/
+├── datasets_generator/    # Synthetic EPC events network generator and DockerFile.
+├── epc_nw/                # dbt Core models (staging + marts).
+├── orchestrators/         # Kestra YAML workflow definitions.
+│   ├── kestra/            # YAML file of each flow.
+├── spark/                 # Spark batch aggregation.
+├── terraform-env/         # IaC for GCS + BigQuery.
+│   ├── keys/              # Credentials to GCP.
+├── data_warehouse/        # BigQuery table setup.
+├── terraform/             # IaC for GCS + BigQuery.
+```

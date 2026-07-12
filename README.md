@@ -1,5 +1,11 @@
 # EPC Network Analytics
 
+> End-to-end pipeline Batch of EPC networks events.
+
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Status: In Development](https://img.shields.io/badge/status-in%20development-orange.svg)]()
+
 ## Background
   
 
@@ -149,3 +155,4 @@ epc_network_analytics/
 ## Dashboard
 
 This section it will add in the future.
+

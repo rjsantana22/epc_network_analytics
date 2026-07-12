@@ -67,7 +67,7 @@ flowchart TD
         T --> E
     end
 ```
-![[architecture.svg]]
+![Arquitectura](./architecture.svg)
 
 ---
 

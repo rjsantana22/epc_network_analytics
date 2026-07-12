@@ -1,0 +1,30 @@
+id: pipeline_run_dbt
+namespace: company.team
+
+tasks:
+  - id: dbt
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: cloneRepository
+        type: io.kestra.plugin.git.Clone
+        url: https://github.com/dbt-labs/jaffle_shop
+        branch: main
+
+      - id: dbt_run
+        type: io.kestra.plugin.dbt.cli.DbtCLI
+        containerImage: ghcr.io/kestra-io/dbt-bigquery:latest
+        taskRunner:
+          type: io.kestra.plugin.scripts.runner.docker.Docker
+        commands:
+          - dbt build --profile jaffle_shop --target dev
+        profiles: |
+          jaffle_shop:
+            outputs:
+              dev:
+                type: bigquery
+                method: service-account
+                project: "{{ secret('GCP_PROJECT_ID') }}" # Replace with your GCP Project ID or a secret
+                dataset: "dbt_dataset" # Replace with your BigQuery dataset name
+                threads: 4
+                keyfile_json: "{{ secret('GCP_SERVICE_ACCOUNT_KEY') }}" # Replace with your GCP Service Account Key JSON content as a secret
+            target: dev

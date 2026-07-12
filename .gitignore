@@ -10,6 +10,7 @@ ml_bq/
 *.so
 *.parquet
 *.json
+NOTE.md
 
 # Distribution / packaging
 LICENSE.txt

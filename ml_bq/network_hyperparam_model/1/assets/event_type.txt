@@ -1,4 +1,0 @@
-attach
-service_request
-handover
-paging

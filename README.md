@@ -69,6 +69,11 @@ flowchart TD
 ```
 ![Arquitectura](./architecture.svg)
 
+
+> Here, I need to add the staging and processed folder to bronze and silver folder. Maybe a receive table in bq and then landing zone:
+> Because I need receive data in table, and then partitioned and cluster data in table->(Name table). 
+> Then DBT take this info and transform these info.
+
 ---
 
 ## Tech Stack
@@ -159,15 +164,15 @@ This section it will add in the future.
 
 ---
 
-## 🤝 Contribuciones
+## 🤝 Contributions
 
-Este es un proyecto de portafolio personal. Si tienes sugerencias o encuentras bugs, feel free to:
+This is a project of personal portfolio. If you have suggetions or find a bugs, feel free to:
 
-1. Fork el proyecto
-2. Crear una rama con tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir un Pull Request
+1. To do Fork of this project.
+2. Create a branch with your feature (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 ---
 ## 📄 License
 

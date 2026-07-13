@@ -2,7 +2,7 @@
 
 ## 📋 Descripción
 
-Este proyecto implementa un script generador de eventos, que emula el comportamiento de una redes moviles visto desde el Core de datos, especificamente desde el SGSN-MME. El script genera datasets los cuales pueden ser usado para analizar eventos de señalización en redes de telecomunicaciones móviles. Con ingenieria de datos se puede procesar y analizar eventos como attach, handover, paging y otros procedimientos de señalización SGSN-MME.
+Este proyecto implementa un script generador de eventos, que emula el comportamiento de redes moviles visto desde el Core de datos, especificamente desde el SGSN-MME. El script genera datasets los cuales pueden ser usado para analizar eventos de señalización en redes de telecomunicaciones móviles. Con ingenieria de datos se puede procesar y analizar eventos como attach, handover, paging y otros procedimientos de señalización SGSN-MME.
 
 **Caso de uso:** Monitoreo y análisis de rendimiento de red móvil en tiempo casi-real, permitiendo detectar anomalías, calcular KPIs de red y optimizar la experiencia del usuario.
 

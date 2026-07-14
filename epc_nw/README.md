@@ -1,22 +1,24 @@
 # DBT
-
 ## Start the installation
 
-​```shell
+​
+```shell
 pip install dbt-bigquery
 dbt init epc_nw
-# You'll be prompted for: path to your GCP credentials, GCP project ID,
-# BigQuery dataset name, number of threads (4), job execution timeout
-# (set to none), and the region.
+#You'll be prompted for: path to your GCP credentials, GCP project ID,
+#BigQuery dataset name, number of threads (4), job execution timeout
+#(set to none), and the region.
 dbt debug
-​```
+```
+
+---
 
 ## Create profiles.yml
 
 Defines the connection dbt uses to reach BigQuery. Lives outside the
 repo (`~/.dbt/profiles.yml`) — never commit real credentials.
 
-​```Yaml
+```Yaml
 epc_nw:
   target: dev
   outputs:
@@ -30,7 +32,9 @@ epc_nw:
       location: US
       job_execution_timeout_seconds: 300
       job_retries: 1
-​```
+```
+
+---
 
 ## Modify dbt_project.yml
 
@@ -57,7 +61,7 @@ epc_nw:
   - `marts/dimensions/` — `dim_apn`, `dim_area`, `dim_plmn`
   - `marts/facts/` — `fct_sessions`, `fct_event_by_apn`, `fct_event_by_area`, `fct_plmn_by_event`
 
-​```Yaml
+```Yaml
 # Important section
 models:
   epc_nw:
@@ -67,14 +71,15 @@ models:
     marts:
       +schema: analytics
       +materialized: table
-​```
+```
 
 - `{{ source('name', 'table') }}` → raw data defined in your YAML
 - `{{ ref('model_name') }}` → another dbt model
 
+---
 ## Create the folder structure
 
-​```shell
+```shell
 cd epc_nw
 rm -rf models/example
 mkdir -p models/{staging,marts/dimensions,marts/facts,intermediate}
@@ -82,19 +87,22 @@ mkdir -p tests
 touch models/sources.yml
 touch models/staging/stg_network_events.sql
 touch models/marts/facts/fct_sessions.sql
-​```
+```
+---
 
 ## Create packages.yml
 
-​```yaml
+```yaml
 packages:
   - package: dbt-labs/dbt_utils
     version: 1.1.1   # double check this matches what's actually pinned in your repo
-​```
+```
 
-​```shell
+```shell
 dbt deps
-​```
+
+```
+---
 
 ## Create sources.yml
 
@@ -117,6 +125,7 @@ sources:
       - name: events_epc_network
         description: "Eventos raw generados por el generador EPC Docker"
 ```
+---
 
 ## Create schema.yml
 
@@ -144,13 +153,14 @@ models:
           - accepted_values:
               values: ['success', 'failure']    
 ```
+---
 
 ## Run and validate
-
-​```shell
+```shell
 dbt run --select dim_apn
 dbt test --select dim_apn
 dbt build
 dbt docs generate
 dbt docs serve
-​```
+
+```

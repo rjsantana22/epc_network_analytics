@@ -1,5 +1,5 @@
-id: dataproc_pipeline
-namespace: company.team
+id: pipeline_spark_dataproc_gcs
+namespace: epc.networks
 description: Create a Dataproc cluster, upload a Python file, run a PySpark job, and delete the cluster.
 
 
@@ -10,8 +10,8 @@ triggers:
     preconditions:
       id: flows
       flows:
-        - namespace: company.team
-          flowId: pipe_load_to_gcs
+        - namespace: epc.networks
+          flowId: pipeline_load_to_gcs
           states: [SUCCESS]
 inputs:
   - id: myfile
@@ -36,8 +36,8 @@ tasks:
       name: "batch-pyspark-job"
       mainPythonFileUri: "gs://{{ kv('GCP_BUCKET_NAME') }}/code/{{ kv('GCP_PYTHON_FILE_NAME') }}"
       args:
-         - "--input_epc_network=gs://epc_network_bucket/bronze/batch/raw_cdrs/*.json"
-         - "--output=gs://epc_network_bucket/silver_cdrs/batch/"
+         - "--input_epc_network=gs://epc_network_bucket/bronze/batch/staging/*.json"
+         - "--output=gs://epc_network_bucket/silver/batch/staging"
 
 pluginDefaults:
   - type: io.kestra.plugin.gcp

@@ -1,5 +1,5 @@
 id: pipeline_load_to_gcs
-namespace: company.team
+namespace: epc.networks
 concurrency:
      limit: 1
      behavior: QUEUE
@@ -40,7 +40,7 @@ tasks:
       - id: upload_to_gcs
         type: io.kestra.plugin.gcp.gcs.Upload
         from: "{{ outputs.stage_file[taskrun.value].outputFiles[taskrun.value] }}"
-        to: "gs://{{ kv('GCP_BUCKET_NAME') }}/bronze/batch/raw_cdrs/{{ taskrun.value }}"
+        to: "gs://{{ kv('GCP_BUCKET_NAME') }}/bronze/batch/staging/{{ taskrun.value }}"
 
       - id: delete_staged_file
         type: io.kestra.plugin.core.storage.Delete

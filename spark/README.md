@@ -83,3 +83,30 @@ gcloud dataproc jobs submit pyspark \
     --input_epc_network=gs://epc_network_bucket/batch/raw_cdrs/*.json \
     --output=careful-airfoil-367403:demo_dataset.epc_network_stg
 ```
+
+2. Create a job like serveless from **Kestra**: 
+
+This is the option implement in this project, because it is better than to try managed a local cluster:
+
+```Yaml
+    - id: write_file_to_internal_storage
+      type: io.kestra.plugin.core.storage.Write
+      content: "{{ read('pipeline_gcs_bronze_silver.py') }}"
+      extension: ".py" # Le damos la extensión explícitamente para evitar fallos
+    - id: upload_python_file_to_gcs
+      type: io.kestra.plugin.gcp.gcs.Upload
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      # Al estar dentro de WorkingDirectory, usamos la expresión de Kestra para obtener la ruta absoluta del archivo local
+      from: "{{ outputs.write_file_to_internal_storage.uri }}"
+      to: "gs://{{ kv('GCP_BUCKET_NAME') }}/code/{{ kv('GCP_PYTHON_FILE_NAME') }}"
+
+    - id: run_pyspark_batch
+      type: io.kestra.plugin.gcp.dataproc.batches.PySparkSubmit
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      region: "{{ kv('GCP_REGION') }}"
+      name: "batch-pyspark-job"
+      mainPythonFileUri: "gs://{{ kv('GCP_BUCKET_NAME') }}/code/{{ kv('GCP_PYTHON_FILE_NAME') }}"
+      args:
+         - "--input_epc_network=gs://epc_network_bucket/bronze/batch/staging/*.json"
+         - "--output=gs://epc_network_bucket/silver/batch/staging"
+```

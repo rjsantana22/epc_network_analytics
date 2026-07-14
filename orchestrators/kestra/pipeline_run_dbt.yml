@@ -1,5 +1,5 @@
 id: pipeline_run_dbt
-namespace: company.team
+namespace: epc.networks
 
 tasks:
   - id: dbt

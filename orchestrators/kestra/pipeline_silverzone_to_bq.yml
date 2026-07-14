@@ -1,5 +1,5 @@
 id: pipeline_silverzone_to_bq
-namespace: company.team
+namespace: epc.networks
 
 triggers:
   - id: trigger_dataproc_pipeline
@@ -8,7 +8,7 @@ triggers:
     preconditions:
       id: flows
       flows:
-        - namespace: company.team
+        - namespace: epc.networks
           flowId: dataproc_pipeline
           states: [SUCCESS]
 

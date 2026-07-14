@@ -11,6 +11,9 @@ ml_bq/
 *.parquet
 *.json
 NOTE.md
+ROADMAP.md
+.env 
+keys/
 
 # Distribution / packaging
 LICENSE.txt

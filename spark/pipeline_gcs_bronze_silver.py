@@ -4,68 +4,82 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, DoubleType, DateType
 import argparse
 
+def run_process():
+    try:
+        spark = SparkSession.builder \
+            .appName('test') \
+            .getOrCreate()
+    except Exception as e:
+        print(f"Error al crear la sesión de Spark: {e}")
+        exit(1)
 
-parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()
 
-parser.add_argument('--input_epc_network', required=True)
-parser.add_argument('--output', required=True)
+    parser.add_argument('--input_epc_network', required=True)
+    parser.add_argument('--output', required=True)
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-input_epc_network = args.input_epc_network
-output = args.output
+    input_epc_network = args.input_epc_network
+    output = args.output
 
-spark = SparkSession.builder \
-    .appName('test') \
-    .getOrCreate()
+    # 1. Defines el esquema exacto
+    # Nota: session_start_time / session_end_time llegan como strings desde el JSON
+    # (formato 'yyyy-MM-dd HH:mm:ss'), por eso el schema las declara como StringType
+    # y la conversión a timestamp se hace explícitamente más abajo con to_timestamp.
+    # _corrupt_record captura filas que no matchean el schema en vez de tumbar el job.
+    schema = StructType([
+        StructField("event_id", IntegerType(), True),
+        StructField("timestamp", StringType(), True),
+        StructField("event_type", StringType(), True),
+        StructField("result", StringType(), True),
+        StructField("cause_code", StringType(), True),
+        StructField("imsi", StringType(), True),
+        StructField("cell_id", IntegerType(), True),
+        StructField("enodeb_id", IntegerType(), True),
+        StructField("mme_id", IntegerType(), True),
+        StructField("tracking_area", IntegerType(), True),
+        StructField("duration_ms", IntegerType(), True),
+        StructField("rat_type", StringType(), True),
+        StructField("apn", StringType(), True),
+        StructField("plmn_id", IntegerType(), True)
+                ])
 
-# 1. Defines el esquema exacto
-schema = StructType([
-    StructField("cdr_id", IntegerType(), True),      # Entero
-    StructField("imsi", StringType(), True),           # Texto
-    StructField("session_start_time", DateType(), True),           # Decimal / Flotante
-    StructField("session_end_time", DateType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("duration_seconds", IntegerType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("apn", StringType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("plmn_id", IntegerType(), True),     # Fecha (YYYY-MM-DD)
-    StructField("tracking_area", IntegerType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("cell_id", IntegerType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("rat_type", StringType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("bytes_uplink", IntegerType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("bytes_downlink", IntegerType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("bytes_total", IntegerType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("charging_type", StringType(), True),      # Fecha (YYYY-MM-DD)
-    StructField("service_class", StringType(), True)      # Fecha (YYYY-MM-DD)
+    try:
+        df_epc_network = spark.read \
+            .option("multiLine", "true") \
+            .option("mode", "PERMISSIVE") \
+            .schema(schema) \
+            .json(input_epc_network)
+    except Exception as e:
+        print(f"Error al leer el archivo JSON: {e}")
+        spark.stop()
+        exit(1)
 
-])
+    if df_epc_network.isEmpty():
+        print("⚠️ El path no contiene archivos o está vacío. Finalizando job sin error.")
+        spark.stop()
+        exit(0)
 
-#spark.conf.set("temporaryGcsBucket", "dataproc-temp-us-central1-403909964498-18nkuj4f")
+    print(f"¡Éxito! Total de filas cargadas (epc_network): {df_epc_network.count()}")
+    print("Columnas originales:", df_epc_network.columns)
 
-df_epc_network = spark.read.option("multiLine", "true").json(input_epc_network)
+    # Filas que no matchean el schema quedan en _corrupt_record en vez de convertirse
+    # silenciosamente en nulls. Se descartan del output; si querés inspeccionarlas más
+    # adelante, es tan simple como escribir el complemento de este filter a otro path.
 
-print(f"¡Éxito! Total de filas cargadas (epc_network): {df_epc_network.count()}")
+    df_valid = df_epc_network.withColumn('timestamp', F.to_timestamp(F.col('timestamp'), 'yyyy-MM-dd HH:mm:ss'))
 
-if df_epc_network.isEmpty():
-    print("⚠️ El path no contiene archivos o está vacío. Finalizando job sin error.")
+    df_valid = df_valid.withColumn(
+        'imsi',
+        F.regexp_replace(F.col('imsi'), '^IMSI_', '')
+    )
+
+    print(f"Escribiendo resultado en formato Parquet en: {output}")
+    df_valid.write.parquet(output, mode='overwrite')
+
+    print("🚀 ¡Proceso completado con éxito!")
     spark.stop()
-    exit(0)
 
-print(f"¡Éxito! Total de filas cargadas (epc_network): {df_epc_network.count()}")
-print("Columnas originales:", df_epc_network.columns)
-
-# 4. Transformaciones (Descomenta las fechas si las necesitas, ya funcionan)
-df_epc_network = df_epc_network.withColumn('session_start_time', F.to_timestamp(F.col('session_start_time'), 'yyyy-MM-dd HH:mm:ss'))
-df_epc_network = df_epc_network.withColumn('session_end_time', F.to_timestamp(F.col('session_end_time'), 'yyyy-MM-dd HH:mm:ss'))
-
-# CORRECCIÓN AQUÍ: Reemplazar el prefijo 'IMSI_' correctamente en la columna 'imsi'
-df_epc_network = df_epc_network.withColumn(
-    'imsi', 
-    F.regexp_replace(F.col('imsi'), '^IMSI_', '')
-)
-
-# 5. Escritura en Parquet
-print(f"Escribiendo resultado en formato Parquet en: {output}")
-df_epc_network.write.parquet(output, mode='overwrite')
-
-print("🚀 ¡Proceso completado con éxito!")
-spark.stop()
+if __name__ == "__main__":
+    run_process()

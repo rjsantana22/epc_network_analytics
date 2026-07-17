@@ -1,25 +1,31 @@
-{{ config(
-    materialized='table',
-    description='Tabla de hechos: eventos de red agregados por área de seguimiento'
-) }}
+{{
+    config(
+        materialized='incremental',
+        incremental_strategy='merge',
+        unique_key=['area_key', 'session_date', 'event_type', 'result'],
+        partition_by={'field': 'session_date', 'data_type': 'date'},
+        cluster_by=['area_key', 'event_type'],
+        description="Tabla de hechos: eventos de red agregados por área de seguimiento"
+    )
+}}
 
-with staging as (
-    select * from {{ ref('stg_network_events') }}
-),
-dim_area as (
-    select * from {{ ref('dim_area') }}   -- ← join a la dimensión
+with enriched as (
+    select * from {{ ref('int_events_enriched') }}
+    where event_type = 'ATTACH' and result = 'failure'
+
+    {% if is_incremental() %}
+    and date(event_timestamp) >= date_sub(current_date(), interval 3 day)
+    {% endif %}
 ),
 attach_by_area as (
     select
         event_type,
         result,
         date(event_timestamp) as session_date,
-        a.area_key,
+        area_key,
         count(distinct event_id) as total_events
-    from staging
-    left join dim_area as a on staging.tracking_area = a.tac and staging.cell_id = a.ci
-    where staging.event_type = 'ATTACH' AND staging.result = 'failure'
-    group by a.area_key, date(staging.event_timestamp), staging.event_type, staging.result
+    from enriched
+    group by area_key, date(event_timestamp), event_type, result
 )
 
-select * from attach_by_area ORDER BY total_events DESC
+select * from attach_by_area

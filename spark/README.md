@@ -110,3 +110,11 @@ This is the option implement in this project, because it is better than to try m
          - "--input_epc_network=gs://epc_network_bucket/bronze/batch/staging/*.json"
          - "--output=gs://epc_network_bucket/silver/batch/staging"
 ```
+
+## Troubleshooting
+
+```
+gcloud compute instances list --zones=us-central1-b --project=careful-airfoil-367403
+gcloud dataproc clusters list --region=us-central1 --project=careful-airfoil-367403
+gcloud dataproc batches list --region=us-central1 --project=careful-airfoil-367403
+```

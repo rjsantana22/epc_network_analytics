@@ -1,7 +1,18 @@
+# _fct_sessions.yml
 version: 2
+
 models:
   - name: fct_sessions
-    description: "Hechos de sesiones agrupadas por APN"
+    description: "Tabla de hechos: eventos de red por sesión"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - imsi
+            - mme_id
+            - apn_key
+            - area_key
+            - plmn_key
+            - session_date
     columns:
       - name: imsi
         data_tests:
@@ -9,6 +20,24 @@ models:
       - name: mme_id
         data_tests:
           - not_null
+      - name: apn_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_apn')
+              field: apn_key
+      - name: area_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_area')
+              field: area_key
+      - name: plmn_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_plmn')
+              field: plmn_key
       - name: session_date
         data_tests:
           - not_null
@@ -19,6 +48,5 @@ models:
         data_tests:
           - not_null
       - name: detach_count
-      - name: total_session_duration_seconds
         data_tests:
           - not_null

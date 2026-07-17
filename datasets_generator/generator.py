@@ -441,14 +441,15 @@ def main() -> None:
     cdr_generator = CdrGenerator()
 
     output_dir = Path(args.directory)
+    events_dir = output_dir / "events"
     cdr_dir = output_dir / "cdrs"
-    output_dir.mkdir(parents=True, exist_ok=True)
+    events_dir.mkdir(parents=True, exist_ok=True)
     cdr_dir.mkdir(parents=True, exist_ok=True)
 
     if args.mode == "batch":
-        run_batch(generator, cdr_generator, args.events, args.format, output_dir, cdr_dir, logger)
+        run_batch(generator, cdr_generator, args.events, args.format, events_dir, cdr_dir, logger)
     else:
-        run_continuous(generator, cdr_generator, args.events, args.interval, args.format, output_dir, cdr_dir, logger)
+        run_continuous(generator, cdr_generator, args.events, args.interval, args.format, events_dir, cdr_dir, logger)
 
 
 if __name__ == "__main__":

@@ -12,6 +12,9 @@ volumes:
   processed_data:
     name: processed_data
     driver: local
+  processed_events:
+    name: processed_events
+    driver: local
 
 
 services:
@@ -43,6 +46,8 @@ services:
       - kestra_tmp:/tmp/kestra-wd
       - raw_data:/app/data/raw
       - processed_data:/app/data/processed_cdrs
+      - processed_events:/app/data/processed_events
+
     environment:
       KESTRA_CONFIGURATION: |
         datasources:

@@ -20,13 +20,22 @@ tasks:
   - id: load_gcs_to_bigquery
     type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
     from:
-      - "gs://{{ kv('GCP_BUCKET_NAME') }}/silver_cdrs/batch/*.parquet" # Replace with your GCS path
-    destinationTable: "{{ kv('GCP_PROJECT_ID') }}.{{ kv('GCP_DATASET') }}.cdrs_epc_network"
+      - "gs://{{ kv('GCP_BUCKET_NAME') }}/silver/batch/staging/*.parquet" # Replace with your GCS path
+    destinationTable: "{{ kv('GCP_PROJECT_ID') }}.{{ kv('GCP_DATASET') }}.events_epc_network"
     # Replace with your BigQuery table
     format: PARQUET
     autodetect: true
-    writeDisposition: WRITE_TRUNCATE # Or WRITE_APPEND, WRITE_EMPTY
+    writeDisposition: WRITE_APPEND # Acumula cada batch; no reemplaza la tabla
     createDisposition: CREATE_IF_NEEDED
+ 
+  - id: move_processed_parquet
+    type: io.kestra.plugin.gcp.cli.GCloudCLI
+    commands:
+      - |
+        set -e
+        gcloud storage mv \
+          "gs://{{ kv('GCP_BUCKET_NAME') }}/silver/batch/staging/{{ trigger.executionId }}/*.parquet" \
+          "gs://{{ kv('GCP_BUCKET_NAME') }}/silver/batch/processed/{{ trigger.executionId }}/"
 
 pluginDefaults:
   - type: io.kestra.plugin.gcp

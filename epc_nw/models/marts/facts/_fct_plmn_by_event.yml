@@ -1,11 +1,20 @@
 version: 2
 models:
-  - name: fct_event_by_event
+  - name: fct_plmn_by_event
     description: "Hechos de eventos agrupados por evento"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - plmn_key
+            - cause_code
+            - event_date
     columns:
-      - name: plmn_id
+      - name: plmn_key
         data_tests:
           - not_null
+          - relationships:
+              to: ref('dim_plmn')
+              field: plmn_key
       - name: cause_code
         data_tests:
           - not_null

@@ -1,24 +1,28 @@
 {{
     config(
-        materialized='table',
-        description='Tabla de hechos: eventos de red por PLMN'
+        materialized='incremental',
+        incremental_strategy='merge',
+        unique_key=['plmn_key', 'cause_code', 'event_date'],
+        partition_by={'field': 'event_date', 'data_type': 'date'},
+        cluster_by=['plmn_key', 'cause_code'],
+        description="Tabla de hechos: eventos de red por PLMN"
     )
 }}
+with enriched AS (
+    SELECT * FROM {{ ref('int_events_enriched') }}
+    where event_type = 'ATTACH' and result = 'failure'
 
-with staging AS (
-    SELECT * FROM {{ ref('stg_network_events') }}
-),
-dim_plmn as (
-    select * from {{ ref('dim_plmn') }}   -- ← join a la dimensión
+    {% if is_incremental() %}
+    and date(event_timestamp) >= date_sub(current_date(), interval 3 day)
+    {% endif %}
 ),
 events_by_plmn AS (
     SELECT
-        p.plmn_key,
-        staging.cause_code,
-        date(staging.event_timestamp) AS event_date,
-        count(distinct staging.event_id) AS total_events
-    FROM staging
-    LEFT JOIN dim_plmn AS p ON staging.plmn_id = p.plmn
-    GROUP BY p.plmn_key, staging.cause_code, date(staging.event_timestamp)
+        plmn_key,
+        cause_code,
+        date(event_timestamp) AS event_date,
+        count(distinct event_id) AS total_events
+    FROM enriched
+    GROUP BY plmn_key, cause_code, date(event_timestamp)
 )
-select * from events_by_plmn ORDER BY total_events DESC
+select * from events_by_plmn 

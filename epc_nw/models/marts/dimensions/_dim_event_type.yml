@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: dim_event_type
+    description: "Dimensión de tipos de evento de red (ATTACH, HANDOVER, PAGING, SERVICE_REQUEST)"
+    columns:
+      - name: event_type_key
+        data_tests:
+          - not_null
+          - unique
+      - name: event_type_name
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['attach', 'handover', 'paging', 'service_request']
+      - name: loaded_at
+        data_tests:
+          - not_null

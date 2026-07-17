@@ -2,7 +2,20 @@ version: 2
 models:
   - name: fct_event_by_area
     description: "Hechos de eventos agrupados por área"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - area_key
+            - session_date
+            - event_type
+            - result
     columns:
+      - name: area_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_area')
+              field: area_key
       - name: event_type
         data_tests:
           - not_null
@@ -10,12 +23,6 @@ models:
         data_tests:
           - not_null
       - name: session_date
-        data_tests:
-          - not_null
-      - name: tac
-        data_tests:
-          - not_null
-      - name: cell_id
         data_tests:
           - not_null
       - name: total_events

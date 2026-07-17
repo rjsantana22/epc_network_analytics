@@ -1,12 +1,10 @@
 id: pipeline_spark_dataproc_gcs
 namespace: epc.networks
-description: Create a Dataproc cluster, upload a Python file, run a PySpark job, and delete the cluster.
-
+description: Create a Dataproc cluster, upload a Python file, run a PySpark job, and move only successfully processed files to processed/.
 
 triggers:
   - id: trigger_pipe_load_to_gcs
     type: io.kestra.plugin.core.trigger.Flow
-    # Se ejecuta cuando los siguientes flujos cumplen estas condiciones
     preconditions:
       id: flows
       flows:
@@ -21,24 +19,70 @@ tasks:
     - id: write_file_to_internal_storage
       type: io.kestra.plugin.core.storage.Write
       content: "{{ read('pipeline_gcs_bronze_silver.py') }}"
-      extension: ".py" # Le damos la extensión explícitamente para evitar fallos
+      extension: ".py"
+ 
     - id: upload_python_file_to_gcs
       type: io.kestra.plugin.gcp.gcs.Upload
       projectId: "{{ kv('GCP_PROJECT_ID') }}"
-      # Al estar dentro de WorkingDirectory, usamos la expresión de Kestra para obtener la ruta absoluta del archivo local
       from: "{{ outputs.write_file_to_internal_storage.uri }}"
       to: "gs://{{ kv('GCP_BUCKET_NAME') }}/code/{{ kv('GCP_PYTHON_FILE_NAME') }}"
+ 
+    - id: create_cluster
+      type: io.kestra.plugin.gcp.cli.GCloudCLI
+      commands:
+        - |
+          set -e
+          gcloud dataproc clusters create {{ kv('GCP_CLUSTER_NAME') }}-{{ execution.id | lower }} \
+            --project=careful-airfoil-367403 \
+            --region=us-central1 \
+            --zone=us-central1-b \
+            --single-node \
+            --master-machine-type=c3-standard-4 \
+            --master-boot-disk-type=hyperdisk-balanced \
+            --master-boot-disk-size=200GB \
+            --image-version=2.3.30-debian12 \
+            --optional-components=JUPYTER \
+            --subnet=default \
+            --shielded-secure-boot \
+            --shielded-vtpm \
+            --shielded-integrity-monitoring
 
-    - id: run_pyspark_batch
-      type: io.kestra.plugin.gcp.dataproc.batches.PySparkSubmit
-      projectId: "{{ kv('GCP_PROJECT_ID') }}"
-      region: "{{ kv('GCP_REGION') }}"
-      name: "batch-pyspark-job"
-      mainPythonFileUri: "gs://{{ kv('GCP_BUCKET_NAME') }}/code/{{ kv('GCP_PYTHON_FILE_NAME') }}"
-      args:
-         - "--input_epc_network=gs://epc_network_bucket/bronze/batch/staging/*.json"
-         - "--output=gs://epc_network_bucket/silver/batch/staging"
-
+    - id: submit_pyspark_job
+      type: io.kestra.plugin.gcp.cli.GCloudCLI
+      commands:
+        - |
+          set -e
+          gcloud dataproc jobs submit pyspark \
+            gs://{{ kv('GCP_BUCKET_NAME') }}/code/{{ kv('GCP_PYTHON_FILE_NAME') }} \
+            --cluster={{ kv('GCP_CLUSTER_NAME') }}-{{ execution.id | lower }} \
+            --region={{ kv('GCP_REGION') }} \
+            -- \
+            --input_epc_network=gs://epc_network_bucket/bronze/batch/staging/*.json \
+            --output=gs://epc_network_bucket/silver/batch/staging/{{ execution.id }}/
+      # Batch-level success: si este task falla, Kestra detiene el flow por defecto,
+      # move_processed_files nunca se ejecuta y staging/ queda intacto.
+      # El cluster se borra igual, gracias al bloque finally más abajo.
+ 
+    - id: move_processed_files
+      type: io.kestra.plugin.gcp.cli.GCloudCLI
+      commands:
+        - |
+          set -e
+          gcloud storage mv \
+            "gs://epc_network_bucket/bronze/batch/staging/*.json" \
+            "gs://epc_network_bucket/bronze/batch/processed/"
+ 
+finally:
+  # Corre siempre, haya éxito o falla algún task anterior. Esto es lo que evita
+  # que un cluster quede corriendo (y cobrando) si submit_pyspark_job falla.
+  - id: delete_cluster
+    type: io.kestra.plugin.gcp.cli.GCloudCLI
+    commands:
+      - |
+        gcloud dataproc clusters delete {{ kv('GCP_CLUSTER_NAME') }}-{{ execution.id | lower }} \
+          --region={{ kv('GCP_REGION') }} \
+          --quiet
+ 
 pluginDefaults:
   - type: io.kestra.plugin.gcp
     values:

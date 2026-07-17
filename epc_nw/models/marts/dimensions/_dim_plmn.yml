@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: dim_plmn
+    description: "Dimensión de PLMN (Public Land Mobile Network)"
+    columns:
+      - name: plmn_key
+        data_tests:
+          - not_null
+      - name: plmn
+        data_tests:
+          - not_null
+      - name: loaded_at
+        data_tests:
+          - not_null

@@ -13,7 +13,7 @@ tasks:
       import os
       from kestra import Kestra
 
-      ruta = '/app/data/raw/cdrs/'
+      ruta = '/app/data/raw/events/'
       archivos = []
       if os.path.exists(ruta):
           archivos = [a for a in os.listdir(ruta) if a.lower().endswith('.json')]
@@ -35,7 +35,7 @@ tasks:
           - "{{ taskrun.value }}"
         script: |
           import shutil
-          shutil.copy('/app/data/raw/cdrs/{{ taskrun.value }}', '{{ taskrun.value }}')
+          shutil.copy('/app/data/raw/events/{{ taskrun.value }}', '{{ taskrun.value }}')
 
       - id: upload_to_gcs
         type: io.kestra.plugin.gcp.gcs.Upload
@@ -54,8 +54,8 @@ tasks:
           import os
           import shutil
 
-          raw_folder = '/app/data/raw/cdrs/'
-          processed_folder = '/app/data/processed_cdrs/'
+          raw_folder = '/app/data/raw/events/'
+          processed_folder = '/app/data/processed_events/'
           fname = "{{ taskrun.value }}"
 
           os.makedirs(processed_folder, exist_ok=True)

@@ -8,6 +8,7 @@ models:
             - plmn_key
             - cause_code
             - event_date
+            - event_time
     columns:
       - name: plmn_key
         data_tests:
@@ -19,6 +20,9 @@ models:
         data_tests:
           - not_null
       - name: event_date
+        data_tests:
+          - not_null
+      - name: event_time
         data_tests:
           - not_null
       - name: total_events

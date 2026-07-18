@@ -51,6 +51,12 @@ models:
       - name: attach_count
         data_tests:
           - not_null
-      - name: detach_count
+      - name: handover_count
+        data_tests:
+          - not_null
+      - name: paging_count
+        data_tests:
+          - not_null
+      - name: service_request_count
         data_tests:
           - not_null

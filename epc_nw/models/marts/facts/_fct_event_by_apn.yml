@@ -19,6 +19,9 @@ models:
       - name: event_date
         data_tests:
           - not_null
+      - name: event_time
+        data_tests:
+          - not_null
       - name: cause_code
         data_tests:
           - not_null

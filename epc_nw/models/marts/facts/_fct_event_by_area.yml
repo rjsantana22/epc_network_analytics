@@ -25,6 +25,9 @@ models:
       - name: session_date
         data_tests:
           - not_null
+      - name: event_time
+        data_tests:
+          - not_null
       - name: total_events
         data_tests:
           - not_null

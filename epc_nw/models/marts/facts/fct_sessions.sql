@@ -24,11 +24,12 @@ sessions as (
         area_key,
         plmn_key,
         date(event_timestamp) as session_date,
+        time(event_timestamp) as session_time,
         count(distinct event_id) as total_events,
         count(distinct case when event_type = 'ATTACH' then event_id end) as attach_count,
         count(distinct case when event_type = 'DETACH' then event_id end) as detach_count
     from enriched
-    group by imsi, mme_id, apn_key, area_key, plmn_key, session_date
+    group by imsi, mme_id, apn_key, area_key, plmn_key, session_date, session_time
 )
 
 select * from sessions

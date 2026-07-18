@@ -164,3 +164,12 @@ dbt docs generate
 dbt docs serve
 
 ```
+
+SELECT
+  table_name,
+  partition_id,
+  total_rows,
+  total_logical_bytes
+FROM `careful-airfoil-367403.analytics.INFORMATION_SCHEMA.PARTITIONS`
+WHERE table_name = 'fct_event_by_apn'
+ORDER BY partition_id DESC

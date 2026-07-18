@@ -13,6 +13,7 @@ models:
             - area_key
             - plmn_key
             - session_date
+            - session_time
     columns:
       - name: imsi
         data_tests:
@@ -39,6 +40,9 @@ models:
               to: ref('dim_plmn')
               field: plmn_key
       - name: session_date
+        data_tests:
+          - not_null
+      - name: session_time
         data_tests:
           - not_null
       - name: total_events

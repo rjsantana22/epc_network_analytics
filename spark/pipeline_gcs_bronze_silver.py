@@ -29,20 +29,20 @@ def run_process():
     # y la conversión a timestamp se hace explícitamente más abajo con to_timestamp.
     # _corrupt_record captura filas que no matchean el schema en vez de tumbar el job.
     schema = StructType([
-        StructField("event_id", IntegerType(), True),
+        StructField("event_id", StringType(), True),
         StructField("timestamp", StringType(), True),
         StructField("event_type", StringType(), True),
         StructField("result", StringType(), True),
         StructField("cause_code", StringType(), True),
         StructField("imsi", StringType(), True),
-        StructField("cell_id", IntegerType(), True),
+        StructField("cell_id", StringType(), True),
         StructField("enodeb_id", IntegerType(), True),
         StructField("mme_id", IntegerType(), True),
         StructField("tracking_area", IntegerType(), True),
         StructField("duration_ms", IntegerType(), True),
         StructField("rat_type", StringType(), True),
         StructField("apn", StringType(), True),
-        StructField("plmn_id", IntegerType(), True)
+        StructField("plmn_id", StringType(), True)
                 ])
 
     try:
@@ -68,7 +68,7 @@ def run_process():
     # silenciosamente en nulls. Se descartan del output; si querés inspeccionarlas más
     # adelante, es tan simple como escribir el complemento de este filter a otro path.
 
-    df_valid = df_epc_network.withColumn('timestamp', F.to_timestamp(F.col('timestamp'), 'yyyy-MM-dd HH:mm:ss'))
+    df_valid = df_epc_network.withColumn('timestamp', F.to_timestamp(F.col('timestamp'), "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"))
 
     df_valid = df_valid.withColumn(
         'imsi',

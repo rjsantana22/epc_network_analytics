@@ -10,6 +10,7 @@ models:
               - apn_key
               - event_date
               - cause_code
+              - event_time
     columns:
       - name: apn_key
         data_tests:

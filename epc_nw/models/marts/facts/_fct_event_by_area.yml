@@ -10,6 +10,7 @@ models:
               - session_date
               - event_type
               - result
+              - event_time
     columns:
       - name: area_key
         data_tests:

@@ -13,7 +13,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['attach', 'handover', 'paging', 'service_request']
+                values: ['ATTACH', 'HANDOVER', 'PAGING', 'SERVICE_REQUEST']
       - name: loaded_at
         data_tests:
           - not_null

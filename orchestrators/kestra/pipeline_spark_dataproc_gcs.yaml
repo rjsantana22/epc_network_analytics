@@ -41,6 +41,7 @@ tasks:
             --master-boot-disk-type=hyperdisk-balanced \
             --master-boot-disk-size=200GB \
             --image-version=2.3.30-debian12 \
+            --enable-component-gateway \
             --optional-components=JUPYTER \
             --subnet=default \
             --shielded-secure-boot \

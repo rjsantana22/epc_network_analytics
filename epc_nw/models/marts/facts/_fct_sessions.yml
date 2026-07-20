@@ -13,8 +13,7 @@ models:
               - apn_key
               - area_key
               - plmn_key
-              - session_date
-              - session_time
+              - event_timestamp
     columns:
       - name: imsi
         data_tests:

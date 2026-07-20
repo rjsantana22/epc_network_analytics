@@ -8,8 +8,7 @@ models:
             combination_of_columns:
               - plmn_key
               - cause_code
-              - event_date
-              - event_time
+              - event_timestamp
     columns:
       - name: plmn_key
         data_tests:
@@ -19,6 +18,9 @@ models:
                 to: ref('dim_plmn')
                 field: plmn_key
       - name: cause_code
+        data_tests:
+          - not_null
+      - name: event_timestamp
         data_tests:
           - not_null
       - name: event_date

@@ -2,7 +2,7 @@
     config(
         materialized='incremental',
         incremental_strategy='merge',
-        unique_key=['apn_key', 'event_date', 'cause_code', 'event_time'],
+        unique_key=['apn_key', 'event_timestamp', 'cause_code'],
         partition_by={'field': 'event_date', 'data_type': 'date'},
         cluster_by=['apn_key', 'cause_code'],
         description="Tabla de hechos: eventos de red por APN"
@@ -18,13 +18,14 @@ with enriched as (
 event_by_apn as (
     select
         apn_key,
+        event_timestamp,
         date(event_timestamp) as event_date,
         FORMAT_TIMESTAMP('%H:%M:%S', event_timestamp) as event_time,
         cause_code,
         result,
         count(distinct event_id) as total_events
     from enriched
-    group by apn_key, event_date, event_time, cause_code, result
+    group by apn_key, event_date, event_time, cause_code, result, event_timestamp
 )
 
 select * from event_by_apn 

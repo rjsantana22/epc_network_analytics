@@ -2,7 +2,7 @@
     config(
         materialized='incremental',
         incremental_strategy='merge',
-        unique_key=['imsi', 'mme_id', 'apn_key', 'area_key', 'plmn_key', 'session_date', 'session_time'],
+        unique_key=['imsi', 'mme_id', 'apn_key', 'area_key', 'plmn_key', 'event_timestamp'],
         partition_by={'field': 'session_date', 'data_type': 'date'},
         cluster_by=['apn_key', 'area_key', 'plmn_key'],
         description="Tabla de hechos: eventos de red por sesión"

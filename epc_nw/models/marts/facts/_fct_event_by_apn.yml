@@ -8,9 +8,8 @@ models:
           arguments:
             combination_of_columns:
               - apn_key
-              - event_date
+              - event_timestamp
               - cause_code
-              - event_time
     columns:
       - name: apn_key
         data_tests:
@@ -19,6 +18,9 @@ models:
               arguments:  
                 to: ref('dim_apn')
                 field: apn_key
+      - name: event_timestamp
+        data_tests:
+          - not_null
       - name: event_date
         data_tests:
           - not_null

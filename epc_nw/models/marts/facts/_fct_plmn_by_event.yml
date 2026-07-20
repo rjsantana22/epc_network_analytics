@@ -4,18 +4,20 @@ models:
     description: "Hechos de eventos agrupados por evento"
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - plmn_key
-            - cause_code
-            - event_date
-            - event_time
+          arguments:
+            combination_of_columns:
+              - plmn_key
+              - cause_code
+              - event_date
+              - event_time
     columns:
       - name: plmn_key
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_plmn')
-              field: plmn_key
+              arguments:
+                to: ref('dim_plmn')
+                field: plmn_key
       - name: cause_code
         data_tests:
           - not_null

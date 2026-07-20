@@ -1,30 +1,36 @@
-id: pipeline_run_dbt
+id: run_dbt
 namespace: epc.networks
 
 tasks:
-  - id: dbt
+
+  - id: dbt_project
     type: io.kestra.plugin.core.flow.WorkingDirectory
     tasks:
-      - id: cloneRepository
+      - id: clone_repository
         type: io.kestra.plugin.git.Clone
-        url: https://github.com/dbt-labs/jaffle_shop
+        url: https://github.com/rjsantana22/epc_network_analytics
         branch: main
 
-      - id: dbt_run
+      - id: dbt_bigquery_build
         type: io.kestra.plugin.dbt.cli.DbtCLI
-        containerImage: ghcr.io/kestra-io/dbt-bigquery:latest
+        containerImage: ghcr.io/kestra-io/dbt-bigquery:latest  # pin to a real tag you've verified
         taskRunner:
           type: io.kestra.plugin.scripts.runner.docker.Docker
+        projectDir: epc_nw
         commands:
-          - dbt build --profile jaffle_shop --target dev
+          - dbt deps #--project-dir epc_nw
+          - dbt build --target dev #--project-dir epc_nw --target dev
+        inputFiles:
+          sa.json: "{{ kv('GCP_CREDS') }}"
         profiles: |
-          jaffle_shop:
+          epc_nw:
             outputs:
               dev:
                 type: bigquery
-                method: service-account
-                project: "{{ secret('GCP_PROJECT_ID') }}" # Replace with your GCP Project ID or a secret
-                dataset: "dbt_dataset" # Replace with your BigQuery dataset name
+                method: service-account-json
+                project: {{ kv('GCP_PROJECT_ID') }} # Replace with your GCP Project ID
+                dataset: {{ kv('GCP_DATASET') }} # Replace with your BigQuery dataset
+                location: "{{ kv('GCP_LOCATION') }}"
                 threads: 4
-                keyfile_json: "{{ secret('GCP_SERVICE_ACCOUNT_KEY') }}" # Replace with your GCP Service Account Key JSON content as a secret
+                keyfile_json: sa.json # Ensure this secret is configured in Kestra
             target: dev

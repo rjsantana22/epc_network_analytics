@@ -6,14 +6,15 @@ models:
     description: "Tabla de hechos: eventos de red por sesión"
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - imsi
-            - mme_id
-            - apn_key
-            - area_key
-            - plmn_key
-            - session_date
-            - session_time
+          arguments:
+            combination_of_columns:
+              - imsi
+              - mme_id
+              - apn_key
+              - area_key
+              - plmn_key
+              - session_date
+              - session_time
     columns:
       - name: imsi
         data_tests:
@@ -25,20 +26,23 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_apn')
-              field: apn_key
+              arguments:
+                to: ref('dim_apn')
+                field: apn_key
       - name: area_key
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_area')
+              arguments:
+                to: ref('dim_area')
               field: area_key
       - name: plmn_key
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_plmn')
-              field: plmn_key
+              arguments:
+                to: ref('dim_plmn')
+                field: plmn_key
       - name: session_date
         data_tests:
           - not_null

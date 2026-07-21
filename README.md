@@ -65,7 +65,7 @@ See [Roadmap](./ROADMAP.md) for what's planned next.
 
 ---
 ## Architecture
-![alt text](inline_diagram.svg)
+![alt text](inline_diagram.png)
 ![Arquitectura](./architecture.svg)
 
 ---

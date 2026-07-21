@@ -163,14 +163,14 @@ I used Looker Studio to build a dashboard where I can elaborate some KPI and ana
 ### **EPC Network Analytics Report** 
 This dashboard is compose for two pages, where you can see the important of this data.
 
-**EPC Control Plane Performance**
+#### **EPC Control Plane Performance**
 
-#### Success and Failure Rate
+##### Success and Failure Rate
 
-![alt text](dashboard/success_and_failure_rate.png.png)
+![alt text](dashboard/success_and_failure_rate.png)
 We can look the sucessufully and failure rate, this is very important because it is a basic indicator that give us a perception of failure moment.
 
-#### Signalling Distribution by Cause Code
+##### Signalling Distribution by Cause Code
 
 ![alt text](dashboard/Signalling_Distribution_by_causecode.png)
 This graph present the distribution by different result of events, between cause code. This section, we can see the following information:
@@ -178,31 +178,31 @@ This graph present the distribution by different result of events, between cause
 -   Success Events:
 
 
-#### APN-Level Connectivity Event Insights
+##### APN-Level Connectivity Event Insights
 
 ![alt text](dashboard/APN-Level_Connectivity_event.png)
 
 
-#### Events Distribution Per PLMN
+##### Events Distribution Per PLMN
 
 ![alt text](dashboard/Events_distribution_per_PLMN.png)
 
 
-#### E-UTRAN Tracking Area Performance Metrics
+##### E-UTRAN Tracking Area Performance Metrics
 
 ![alt text](dashboard/E-UTRAN_tracking_area_performance_metrics.png)
 
-**Suscriber Event and Network Analytics Dashboard**
+#### **Suscriber Event and Network Analytics Dashboard**
 
-#### KPI
+##### KPI
 ![alt text](dashboard/KPI_event_type.png)
 
-#### Signalling Event Volumetric Trends
+##### Signalling Event Volumetric Trends
 
 ![alt text](dashboard/Signaling_event_volumetric_trends.png)
 
 
-#### Per-IMSI Control Plane Metrics
+##### Per-IMSI Control Plane Metrics
 ![alt text](dashboard/per-imsi_control_plane_metrics.png)
 
 ---

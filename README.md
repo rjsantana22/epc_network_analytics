@@ -65,27 +65,7 @@ See [Roadmap](./ROADMAP.md) for what's planned next.
 
 ---
 ## Architecture
-```mermaid
-flowchart TD
-    subgraph K[Orchestrated by Kestra]
-        A[Ingestion: events staged to GCS]
-        B[Processing: Spark on Dataproc, bronze to silver]
-        C[Warehousing: silver parquet loaded to BigQuery]
- 
-        subgraph T[Transformation - dbt]
-            direction TB
-            T1[Landing zone: raw_epc.events_epc_network]
-            T2[Staging zone: stg_network_events, view]
-            T3[Data marts / gold zone: dims and facts, tables]
-            T1 --> T2 --> T3
-        end
- 
-        E[Serving: Looker Studio dashboard on marts]
- 
-        A --> B --> C --> T
-        T --> E
-    end
-```
+![alt text](inline_diagram.png)
 ![Arquitectura](./architecture.svg)
 
 ---

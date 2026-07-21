@@ -3,8 +3,8 @@
 > End-to-end pipeline EPC network event Batch.
 
 ![Apache Spark](https://img.shields.io/badge/Apache%20Spark-E25A1C?style=flat&logo=apachespark&logoColor=white)
-![dbt](https://img.shields.io/badge/dbt-FF694B?style=flat&logo=dbt&logoColor=white)
-![3GPP](https://img.shields.io/badge/3GPP-005B9F?style=flat&logoColor=white)
+![dbt-bigquery 1.11.3](https://img.shields.io/badge/dbt-FF694B?style=flat&logo=dbt&logoColor=white)
+![3GPP 23.401](https://img.shields.io/badge/3GPP-005B9F?style=flat&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

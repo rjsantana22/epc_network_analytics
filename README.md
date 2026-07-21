@@ -206,15 +206,19 @@ This page is useful to constant monitorazed because here there are many KPI rate
 ##### KPI
 ![alt text](dashboard/KPI_event_type.png)
 
-
+This section represents all event type that you will see in events logs. This is a rate by event type. This is excellent to look is there is anomalous behavior.
 
 ##### Signalling Event Volumetric Trends
 
 ![alt text](dashboard/Signaling_event_volumetric_trends.png)
 
+The last section(KPI event type) is an acumulative KPI, this section represent the behavior in the time.
+
 
 ##### Per-IMSI Control Plane Metrics
 ![alt text](dashboard/per-imsi_control_plane_metrics.png)
+
+This is a way to understand each event type, because here I represent the behavior of events by subscriber in a table with the top 10, this will say you what are the most offenders suscribers in the network by event type.
 
 ---
 

@@ -158,44 +158,55 @@ epc_network_analytics/
 ---
 ## Dashboard
 
-I used Looker Studio to build a dashboard where I can elaborate some KPI and analytics over events. 
+I used Looker Studio to build a dashboard where I could elaborated some KPI and analytics over events. I think this a good application, because it has a excellent feature of drill-down, this allows us select a value or information in a graph or table, and then it filter in each element in the dashboard.
 
 ### **EPC Network Analytics Report** 
-This dashboard is compose for two pages, where you can see the important of this data.
+This dashboard is compose for two pages, where you can see the most important point of this data. 
+
+> Each pages in this dashboard have two main filter, that are Temporal Analysis and Granular timestamp.
 
 #### **EPC Control Plane Performance**
+
+This page is useful for throubleshooting because if there is a fail scenes present in the network, through the information that is here you could sectorize a cause.
 
 ##### Success and Failure Rate
 
 ![alt text](dashboard/success_and_failure_rate.png)
-We can look the sucessufully and failure rate, this is very important because it is a basic indicator that give us a perception of failure moment.
+We can look the sucessufully and failure rate, this is very important because it is a basic indicator that give us a perception if there is a failure event at moment.
 
 ##### Signalling Distribution by Cause Code
 
 ![alt text](dashboard/Signalling_Distribution_by_causecode.png)
-This graph present the distribution by different result of events, between cause code. This section, we can see the following information:
-
--   Success Events:
+This graph present the distribution by different result of events, and group by cause code. This section, represent the different cause code in base with  the 3GPP Standard TS 23.401.
 
 
 ##### APN-Level Connectivity Event Insights
 
 ![alt text](dashboard/APN-Level_Connectivity_event.png)
 
+This circle graph is excellent visualitzation, because represent the percent of events rate by APN(Access Point Name), this is a good indicator for Control Plane because you can understand each segmentation of traffic, type of service, and also if the rate of Roamers or local subscripber. 
 
 ##### Events Distribution Per PLMN
 
 ![alt text](dashboard/Events_distribution_per_PLMN.png)
 
+However, we have a circle graph where we could intuit the mount of Roamers or local, it is not enough, because of that it is build this graph, where we can look perfectly the distribution per each PLMN. 
 
 ##### E-UTRAN Tracking Area Performance Metrics
 
 ![alt text](dashboard/E-UTRAN_tracking_area_performance_metrics.png)
 
+Frecuently, it is important to sectorize events by RAN through Tracking area, enodeb and cell. So with this table we could look that information, where we can observe a little perfomance of each area through success and failure events, and total events.
+
+
 #### **Suscriber Event and Network Analytics Dashboard**
+
+This page is useful to constant monitorazed because here there are many KPI rate and could sectorize by event type.
 
 ##### KPI
 ![alt text](dashboard/KPI_event_type.png)
+
+
 
 ##### Signalling Event Volumetric Trends
 

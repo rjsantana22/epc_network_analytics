@@ -91,9 +91,9 @@ See [Roadmap](./ROADMAP.md) for what's planned next.
 
 ### Prerequisites
 
-- **Docker Desktop** installed and running
+- **Docker Desktop** installed and running, or **Docker in WSL**.
 - A **GCP Service Account** JSON key saved as `creds/gcp-key.json`
-- **Python** 3.11+ 
+- **Python** 3.10+ 
 - **Terraform**
 
 ### 1. Start Infrastructure

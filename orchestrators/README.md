@@ -1,10 +1,10 @@
 # Orchestrators
 
-This project used **Kestra** as orchestrators, it is like alternative for Airflow because the yaml files are a good option to defines each flow.
+This project uses Kestra as its orchestrator; it's a solid alternative to Airflow, since YAML files are a good way to define each flow.
 
 ## Kestra
 
-It is important before to run each flow, to create the following variable in Kestr, in the KV section To allow kestra connect to GCP:
+It is important before to run each flow, to create the following variable in Kestra, in the KV section To allow kestra connect to GCP:
 
 - GCP_PROJECT_ID
 - GCP_LOCATION
@@ -17,7 +17,7 @@ It is important before to run each flow, to create the following variable in Kes
 
 ![alt text](flow_1.png)
 
-This flow (`pipeline_load_to_gcs.yml`) runs each 15 minutes, where take the logs file are in raw folder and then load in Bronze-Staging in GCS. Finally, move each file load in GCS, to processed_events/ folder.
+Kestra also uploads the `pipeline_gcs_bronze_silver.py` file to GCS, since it's needed by the Spark job. Finally, move each file load in GCS, to processed_events/ folder.
 
 **Spark Cluster GCS - Dataproc**
 
@@ -39,9 +39,9 @@ Finally, runs dbt flows, where it used to model the warehouse and obtained stagi
 
 ## Suggestion
 
-**Active IA in Kestra Enviroment**
+**Enabling AI in the Kestra Environment**
 
-This step is optional, but in my experience was very useful. So, IA help me to select the correct funtions in kestra for each flow.
+This step is optional, but in my experience was very useful. So, the AI helped me pick the right functions.
 
 This are some step to Active it:
 

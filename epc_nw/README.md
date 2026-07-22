@@ -17,11 +17,11 @@ dbt debug
 ```
 ---
 
-## Configure of files
+## Configuring the files
 
 ### Modify dbt_project.yml
 
-## Create sources.yml
+### Create sources.yml
 
 - A **YAML file** inside `models/staging/` that tells dbt where your raw data is
 - The **name** of the file is arbitrary — common choices are `sources.yml`, `_sources.yml` (underscore so it sorts to the top), or something named after the origin like `bigquery_sources.yml`

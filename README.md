@@ -1,6 +1,6 @@
 # EPC Network Analytics
 
-> End-to-end pipeline EPC network event Batch.
+> EEnd-to-end batch pipeline for EPC network events.
 
 ![Kestra](https://img.shields.io/badge/Kestra-5824FF?style=flat&logo=kestra&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white)
@@ -17,7 +17,7 @@
 
 I've worked with **UMTS/EPC** networks since 2019. One thing I've consistently seen as a problem is the sheer volume of data these networks generate every second, and how little of it gets turned into something usable.
 
-In EPC networks generate there are two broad categories of data: **Control Plane** (CP) and **User Plane** (UP). This project focuses on **CP data**, specifically signaling generated at the *SGSN-MME*, which includes attributes like: 
+EPC networks generate two broad categories of data: **Control Plane** (CP) and **User Plane** (UP). This project focuses on **CP data**, specifically signaling generated at the *SGSN-MME*, which includes attributes like: 
 -   APN.
 -   Cell.
 -   eNodeB.
@@ -26,7 +26,7 @@ In EPC networks generate there are two broad categories of data: **Control Plane
 -   IMSI.
 -   Cause codes. 
 
-The Cause codes and event are definitions follow the ***3GPP TS 23.401 (GPRS enhancements for E-UTRAN access)***.
+Cause codes and event definitions follow the ***3GPP TS 23.401 (GPRS enhancements for E-UTRAN access)***.
 
 ## Problem
 
@@ -36,13 +36,9 @@ Even when this data exists, most operators lack the pipeline to turn it into som
 
 Typically requires manual, ad-hoc digging through raw signaling data.
 
-## What this project does
-
-An end-to-end batch pipeline that ingests simulated **CP/SGSN-MME** events and turns them into a trusted, documented, query-ready dataset (a **data product**), from raw event generation to a dimensional model in BigQuery to a dashboard, without manual intervention at any step.
-
 ## Objective
 
-Design and deploy a batch pipeline that transforms simulated **CP/EPC** network events into trusted, queryable KPIs ( volume of events, success/failure rate, distribution by APN/PLMN/area ) without manual intervention.
+An end-to-end batch pipeline that ingests simulated **CP/SGSN-MME** events and turns them into a trusted, documented, query-ready dataset (a **data product**), from raw event generation to a dimensional model in BigQuery to a dashboard, without manual intervention at any step.
 
 ## What It Does
 
@@ -114,7 +110,7 @@ terraform apply # -auto-approve
 cd ..
 ```
 
-### 3. **`generator`** Container — generates 1K synthetic events by Batch.
+### 3. **`generator`** Container — generates 1K synthetic events in batch mode.
 
 ```Shell
 cd datasets_generator
@@ -125,14 +121,14 @@ docker run -it -v raw_data:/app/data/raw --rm generate:python
 
 Then, open the Kestra UI at [http://localhost:8080](http://localhost:8080/) and execute:
 
-1. **`pipeline_load_to_gcs`** — Init the pipeline by trigger each 15min, load the synthetic events network from source data to GCS (Raw - Bronze zone).
-2. **`pipeline_spark_dataproc_gcs`** — These start after `pipeline_load_to_gcs` flow, processed data from **Bronze zone** to **Silver zone** in **GCS**.
-3. **`pipeline_silverzone_to_bq`** — start after `pipeline_spark_dataproc_gcs` flow, load the parquet file from **Silver zone** to tables in **Bigquery**.
-4. **`pipeline_run_dbt`** — start after `pipeline_silverzone_to_bq` flow, modeling the table to fact, dimension tables and report table.
+1. **`pipeline_load_to_gcs`** — Init the pipeline by trigger each 15min, loads the synthetic events network from source data to GCS (Raw - Bronze zone).
+2. **`pipeline_spark_dataproc_gcs`** — These starts after `pipeline_load_to_gcs` flow, processed data from **Bronze zone** to **Silver zone** in **GCS**.
+3. **`pipeline_silverzone_to_bq`** — starts after `pipeline_spark_dataproc_gcs` flow, load the parquet file from **Silver zone** to tables in **Bigquery**.
+4. **`pipeline_run_dbt`** — starts after `pipeline_silverzone_to_bq` flow, models the tables into fact, dimension, and report tables.
 
-### 5. Look the data in Data Studio (Looker Studio) 
+### 5. Look at the data in Looker Studio.
 
-Finally, you could connect to a Looker Studio, or any BI dashboard that you prefer. For this project, I build a dashboard and you can look in the following link:
+Finally, you could connect to a Looker Studio, or any BI dashboard that you prefer. For this project, I built a dashboard and you can look in the following link:
 
 ```
 https://datastudio.google.com/reporting/dbedc84e-6f91-4e1a-9ec1-5407360297ff
@@ -161,36 +157,36 @@ epc_network_analytics/
 I used Looker Studio to build a dashboard where I could elaborated some KPI and analytics over events. I think this a good application, because it has a excellent feature of drill-down, this allows us select a value or information in a graph or table, and then it filter in each element in the dashboard.
 
 ### **EPC Network Analytics Report** 
-This dashboard is compose for two pages, where you can see the most important point of this data. 
+This dashboard is composed of two pages, where you can see the most important point of this data. 
 
-> Each pages in this dashboard have two main filter, that are Temporal Analysis and Granular timestamp.
+> Each page in this dashboard has two main filters, that are Temporal Analysis and Granular timestamp.
 
 #### **EPC Control Plane Performance**
 
-This page is useful for throubleshooting because if there is a fail scenes present in the network, through the information that is here you could sectorize a cause.
+This page is useful for troubleshooting because if there is a failure scenario present in the network, through the information that is here you could sectorize a cause.
 
 ##### Success and Failure Rate
 
 ![alt text](dashboard/success_and_failure_rate.png)
-We can look the sucessufully and failure rate, this is very important because it is a basic indicator that give us a perception if there is a failure event at moment.
+We can look the successful and failure rate, this is very important because it is a basic indicator that give us a perception if there is a failure event at moment.
 
 ##### Signalling Distribution by Cause Code
 
 ![alt text](dashboard/Signalling_Distribution_by_causecode.png)
-This graph present the distribution by different result of events, and group by cause code. This section, represent the different cause code in base with  the 3GPP Standard TS 23.401.
+This graph present the distribution by different result of events, and group by cause code. This section, represents the different cause code base on the 3GPP Standard TS 23.401.
 
 
 ##### APN-Level Connectivity Event Insights
 
 ![alt text](dashboard/APN-Level_Connectivity_event.png)
 
-This circle graph is excellent visualitzation, because represent the percent of events rate by APN(Access Point Name), this is a good indicator for Control Plane because you can understand each segmentation of traffic, type of service, and also if the rate of Roamers or local subscripber. 
+This circle graph is excellent visualitzation, because represents the percent of events rate by APN(Access Point Name), this is a good indicator for Control Plane because you can understand each segmentation of traffic, type of service, and also if the proportion of Roamers or local subscribers. 
 
 ##### Events Distribution Per PLMN
 
 ![alt text](dashboard/Events_distribution_per_PLMN.png)
 
-However, we have a circle graph where we could intuit the mount of Roamers or local, it is not enough, because of that it is build this graph, where we can look perfectly the distribution per each PLMN. 
+The previous chart gives a rough sense of the roamer-vs-local ratio, but it isn't detailed enough — which is why this chart breaks it down by PLMN."
 
 ##### E-UTRAN Tracking Area Performance Metrics
 
@@ -201,7 +197,7 @@ Frecuently, it is important to sectorize events by RAN through Tracking area, en
 
 #### **Suscriber Event and Network Analytics Dashboard**
 
-This page is useful to constant monitorazed because here there are many KPI rate and could sectorize by event type.
+This page is useful to constant monitored because here there are many KPI rate and could sectorize by event type.
 
 ##### KPI
 ![alt text](dashboard/KPI_event_type.png)
@@ -212,19 +208,19 @@ This section represents all event type that you will see in events logs. This is
 
 ![alt text](dashboard/Signaling_event_volumetric_trends.png)
 
-The last section(KPI event type) is an acumulative KPI, this section represent the behavior in the time.
+The last section(KPI event type) is a cumulative KPI, this section represents the behavior over time.
 
 
 ##### Per-IMSI Control Plane Metrics
 ![alt text](dashboard/per-imsi_control_plane_metrics.png)
 
-This is a way to understand each event type, because here I represent the behavior of events by subscriber in a table with the top 10, this will say you what are the most offenders suscribers in the network by event type.
+This is a way to understand each event type, because here I represent the behavior of events by subscriber in a table with the top 10, this tells you which subscribers are the top offenders.
 
 ---
 
 ## Contributions
 
-This is a project of personal portfolio. If you have suggetions or find a bugs, feel free to:
+This is a project of personal portfolio. If you have suggestions or find a bug, feel free to:
 
 1. To do Fork of this project.
 2. Create a branch with your feature (`git checkout -b feature/AmazingFeature`)
@@ -248,7 +244,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 ## Acknowledgments
 
-- Synthetic Dataset inspire in 3GPP TS 23.401 (GPRS enhancements for E-UTRAN access).
+- Synthetic Dataset inspired by in 3GPP TS 23.401 (GPRS enhancements for E-UTRAN access).
 ---
 
-⚠️ **Note:** This project use synthetic data. This doesn't contain real information or confidential of neither telecomunication networks.
+⚠️ **Note:** This project uses synthetic data. It does not contain real or confidential information from any telecommunications network.

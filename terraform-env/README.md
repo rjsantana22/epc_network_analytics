@@ -1,5 +1,11 @@
 # Terraform
 
+Terraform is IaaC, and it is excellent because you can create many resources in a Cloud Platform, tested or used it, and then deleted very fast. Also, it allows us to work better in teams, because you can do push to a repo where the team can have governance that what is created in Cloud.
+
+Terraform is used to create Google Cloud Storage (Datalake) and Bigquery (Warehousing). 
+
+![alt text](diagram_terraform.png)
+
 Execute the services that you define in main.tf
 
 ```Shell

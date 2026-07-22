@@ -1,6 +1,17 @@
 id: run_dbt
 namespace: epc.networks
 
+triggers:
+  - id: trigger_dataproc_pipeline
+    type: io.kestra.plugin.core.trigger.Flow
+    # Se ejecuta cuando los siguientes flujos cumplen estas condiciones
+    preconditions:
+      id: flows
+      flows:
+        - namespace: epc.networks
+          flowId: pipeline_silverzone_to_bq
+          states: [SUCCESS]
+
 tasks:
 
   - id: dbt_project

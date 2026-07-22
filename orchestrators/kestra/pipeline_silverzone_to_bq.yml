@@ -9,7 +9,7 @@ triggers:
       id: flows
       flows:
         - namespace: epc.networks
-          flowId: dataproc_pipeline
+          flowId: pipeline_spark_dataproc_gcs
           states: [SUCCESS]
 
 tasks:

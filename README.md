@@ -234,7 +234,7 @@ This is a project of personal portfolio. If you have suggetions or find a bugs, 
 ---
 ## License
 
-This project is above MIT License - Look the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for more details.
 
 ---
 ## Autor

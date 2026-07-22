@@ -2,7 +2,8 @@
 
 ## 📋 Descripción
 
-Este proyecto implementa un script generador de eventos, que emula el comportamiento de redes moviles visto desde el Core de datos, especificamente desde el SGSN-MME. El script genera datasets los cuales pueden ser usado para analizar eventos de señalización en redes de telecomunicaciones móviles. Con ingenieria de datos se puede procesar y analizar eventos como attach, handover, paging y otros procedimientos de señalización SGSN-MME.
+Este proyecto implementa un script generador de eventos, que emula el comportamiento de redes moviles visto desde el Core de datos, especificamente desde el **SGSN-MME**.
+El script genera datasets los cuales pueden ser usado para analizar eventos de señalización en redes de telecomunicaciones móviles. Con ingenieria de datos se puede procesar y analizar eventos como **attach**, **handover**, **paging** y otros procedimientos de señalización **SGSN-MME**.
 
 **Caso de uso:** Monitoreo y análisis de rendimiento de red móvil en tiempo casi-real, permitiendo detectar anomalías, calcular KPIs de red y optimizar la experiencia del usuario.
 
@@ -11,7 +12,7 @@ Este proyecto implementa un script generador de eventos, que emula el comportami
 - **Lenguaje:** Python 3.10+
 - **Containerización:** Docker
 
-## 📊 Métricas y KPIs Analizados
+## 📊 Métricas y KPIs
 
 ### KPIs Principales
 - **Attach Success Rate (ASR):** % de attach procedures exitosos
@@ -28,70 +29,12 @@ Este proyecto implementa un script generador de eventos, que emula el comportami
 
 ## 🚀 Quick Start
 
-### Prerequisitos
-
-```bash
-Python 3.10 o superior
-Git
-```
-
-### Instalación
-
-1. **Clonar el repositorio:**
-```bash
-git clone https://github.com/redbull123/telecom-network-analytics.git
-cd telecom-network-analytics
-```
-
-2. **Crear entorno virtual:**
-```bash
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
-
-3. **Instalar dependencias:**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Crear estructura de directorios:**
-```bash
-mkdir -p data/raw data/processed data/staging
-```
-
-#### Generar dataset una sola vez
-
-```bash
-# Generar 10,000 eventos en JSON
-python data_generator/generator_2.py --mode batch --events 10000 --format json
-
-# Generar 50,000 eventos en CSV
-python data_generator/generator_2.py --mode batch --events 50000 --format csv
-```
-
-#### Ejecutar en modo continuo (simulación de stream)
-
-```bash
-# Generar 1,000 eventos cada 60 segundos
-python data_generator/generator_2.py --mode continuous --events 1000 --interval 60
-
-# Detener con Ctrl+C
-```
-
-#### Opciones adicionales
-
-```bash
-# Con seed para reproducibilidad
-python data_generator/generator_2.py --mode batch --events 10000 --seed 42
-
-# Especificar directorio de salida
-python data_generator/generator_2.py --mode batch --events 10000 --directory data/custom_output
-```
-
+# Start with Docker Container
 
 To build the images:
 
 ```Shell
+cd datasets_generator/
 docker build -t generate:python .
 ```
 
@@ -101,9 +44,62 @@ To run the generator script.
 docker run -it -v raw_data:/app/data/raw --rm generate:python
 ```
 
+### Instalación del Script standalone
+
+### Prerequisitos
+
+- Python 3.10 o superior
+- Git
+
+1. **Crear entorno virtual:**
+```bash
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+```
+
+2. **Instalar dependencias:**
+```bash
+pip install -r requirements.txt
+```
+
+3. **Crear estructura de directorios:**
+```bash
+mkdir -p data/raw data/raw/events data/raw/cdrs
+```
+
+#### Generar dataset una sola vez
+
+```bash
+# Generar 10,000 eventos en JSON
+python data_generator/generator.py --mode batch --events 10000 --format json
+
+# Generar 50,000 eventos en CSV
+python data_generator/generator.py --mode batch --events 50000 --format csv
+```
+
+#### Ejecutar en modo continuo (simulación de stream)
+
+```bash
+# Generar 1,000 eventos cada 60 segundos
+python data_generator/generator.py --mode continuous --events 1000 --interval 60
+
+# Detener con Ctrl+C
+```
+
+#### Opciones adicionales
+
+```bash
+# Con seed para reproducibilidad
+python data_generator/generator.py --mode batch --events 10000 --seed 42
+
+# Especificar directorio de salida
+python data_generator/generator.py --mode batch --events 10000 --directory data/custom_output
+```
+
 ### Estructura de Datos Sintéticos
 
 Los eventos generados incluyen los siguientes campos:
+> indicar que son eventos de de red, del plano de control
 
 - `event_id`: Identificador único del evento
 - `timestamp`: Marca de tiempo en formato ISO
@@ -120,6 +116,7 @@ Los eventos generados incluyen los siguientes campos:
 - `apn`: Nombre del punto de acceso de red
 - `plmn_id`: Identificador de red pública móvil
 
+> agregar estructura de los cdrs 
 
 ### Ejemplos de Uso
 

@@ -18,13 +18,13 @@
 I've worked with **UMTS/EPC** networks since 2019. One thing I've consistently seen as a problem is the sheer volume of data these networks generate every second, and how little of it gets turned into something usable.
 
 In EPC networks generate there are two broad categories of data: **Control Plane** (CP) and **User Plane** (UP). This project focuses on **CP data**, specifically signaling generated at the *SGSN-MME*, which includes attributes like: 
-    -   APN
-    -   Cell 
-    -   eNodeB
-    -   Tracking Area
-    -   Event
-    -   IMSI
-    -   Cause codes. 
+-   APN.
+-   Cell.
+-   eNodeB.
+-   Tracking Area.
+-   Event.
+-   IMSI.
+-   Cause codes. 
 
 The Cause codes and event are definitions follow the ***3GPP TS 23.401 (GPRS enhancements for E-UTRAN access)***.
 

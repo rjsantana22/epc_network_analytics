@@ -14,6 +14,8 @@ NOTE.md
 ROADMAP.md
 .env 
 keys/
+.python-version
+uv.lock
 
 # Distribution / packaging
 LICENSE.txt

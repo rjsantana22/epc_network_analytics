@@ -1,6 +1,6 @@
 # EPC Network Analytics
 
-> EEnd-to-end batch pipeline for EPC network events.
+> End-to-end batch pipeline for EPC network events.
 
 ![Kestra](https://img.shields.io/badge/Kestra-5824FF?style=flat&logo=kestra&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white)
@@ -26,7 +26,7 @@ EPC networks generate two broad categories of data: **Control Plane** (CP) and *
 -   IMSI.
 -   Cause codes. 
 
-Cause codes and event definitions follow the ***3GPP TS 23.401 (GPRS enhancements for E-UTRAN access)***.
+Cause codes and event definitions follow  ***3GPP TS 23.401 (GPRS enhancements for E-UTRAN access)***.
 
 ## Problem
 
@@ -59,8 +59,6 @@ All five layers are orchestrated by Kestra, which manages the flow from data gen
 - Real-time/streaming processing of live events.
 - Predictive or prescriptive analytics.
 
-See [Roadmap](./ROADMAP.md) for what's planned next.
-
 ---
 ## Architecture
 ![alt text](inline_diagram.png)
@@ -78,7 +76,7 @@ See [Roadmap](./ROADMAP.md) for what's planned next.
 | **Processing**             | Apache Spark on Dataproc (ephemeral cluster, managed by Kestra) |
 | **Data Warehouse**         | Google BigQuery                                                 |
 | **Transformations**        | dbt Core                                                        |
-| **Visualization**          | Data Studio                                                   |
+| **Visualization**          | looker Studio                                                   |
 | **Containerization**       | Docker Compose                                                  |
 
 
@@ -121,7 +119,7 @@ docker run -it -v raw_data:/app/data/raw --rm generate:python
 
 Then, open the Kestra UI at [http://localhost:8080](http://localhost:8080/) and execute:
 
-1. **`pipeline_load_to_gcs`** — Init the pipeline by trigger each 15min, loads the synthetic events network from source data to GCS (Raw - Bronze zone).
+1. **`pipeline_load_to_gcs`** — starts the pipeline, triggerered every 15min, loads the synthetic events from the source data into GCS (Raw - Bronze zone).
 2. **`pipeline_spark_dataproc_gcs`** — These starts after `pipeline_load_to_gcs` flow, processed data from **Bronze zone** to **Silver zone** in **GCS**.
 3. **`pipeline_silverzone_to_bq`** — starts after `pipeline_spark_dataproc_gcs` flow, load the parquet file from **Silver zone** to tables in **Bigquery**.
 4. **`pipeline_run_dbt`** — starts after `pipeline_silverzone_to_bq` flow, models the tables into fact, dimension, and report tables.

@@ -1,4 +1,4 @@
-id: run_dbt
+id: pipeline_run_dbt
 namespace: epc.networks
 
 triggers:
@@ -24,13 +24,13 @@ tasks:
 
       - id: dbt_bigquery_build
         type: io.kestra.plugin.dbt.cli.DbtCLI
-        containerImage: ghcr.io/kestra-io/dbt-bigquery:latest  # pin to a real tag you've verified
+        containerImage: ghcr.io/kestra-io/dbt-bigquery:latest  
         taskRunner:
           type: io.kestra.plugin.scripts.runner.docker.Docker
         projectDir: epc_nw
         commands:
-          - dbt deps #--project-dir epc_nw
-          - dbt build --target dev #--project-dir epc_nw --target dev
+          - dbt deps 
+          - dbt build --target dev 
         inputFiles:
           sa.json: "{{ kv('GCP_CREDS') }}"
         profiles: |
@@ -43,5 +43,5 @@ tasks:
                 dataset: {{ kv('GCP_DATASET') }} # Replace with your BigQuery dataset
                 location: "{{ kv('GCP_LOCATION') }}"
                 threads: 4
-                keyfile_json: sa.json # Ensure this secret is configured in Kestra
+                keyfile_json: sa.json 
             target: dev

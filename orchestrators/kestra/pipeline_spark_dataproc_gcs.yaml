@@ -33,8 +33,8 @@ tasks:
         - |
           set -e
           gcloud dataproc clusters create {{ kv('GCP_CLUSTER_NAME') }}-{{ execution.id | lower }} \
-            --project=careful-airfoil-367403 \
-            --region=us-central1 \
+            --project={{ kv('GCP_PROJECT_ID') }} \
+            --region="{{ kv('GCP_REGION') }}" \
             --zone=us-central1-b \
             --single-node \
             --master-machine-type=c3-standard-4 \
@@ -58,8 +58,8 @@ tasks:
             --cluster={{ kv('GCP_CLUSTER_NAME') }}-{{ execution.id | lower }} \
             --region={{ kv('GCP_REGION') }} \
             -- \
-            --input_epc_network=gs://epc_network_bucket/bronze/batch/staging/*.json \
-            --output=gs://epc_network_bucket/silver/batch/staging/{{ execution.id }}/
+            --input_epc_network=gs://{{ kv('GCP_BUCKET_NAME') }}/bronze/batch/staging/*.json \
+            --output=gs://{{ kv('GCP_BUCKET_NAME') }}/silver/batch/staging/{{ execution.id }}/
       # Batch-level success: si este task falla, Kestra detiene el flow por defecto,
       # move_processed_files nunca se ejecuta y staging/ queda intacto.
       # El cluster se borra igual, gracias al bloque finally más abajo.
@@ -70,8 +70,8 @@ tasks:
         - |
           set -e
           gcloud storage mv \
-            "gs://epc_network_bucket/bronze/batch/staging/*.json" \
-            "gs://epc_network_bucket/bronze/batch/processed/"
+            "gs://{{ kv('GCP_BUCKET_NAME') }}/bronze/batch/staging/*.json" \
+            "gs://{{ kv('GCP_BUCKET_NAME') }}/bronze/batch/processed/"
  
 finally:
   # Corre siempre, haya éxito o falla algún task anterior. Esto es lo que evita
@@ -93,4 +93,3 @@ pluginDefaults:
       bucket: "{{ kv('GCP_BUCKET_NAME') }}"
       region: "{{ kv('GCP_REGION') }}"
       clusterName: "{{ kv('GCP_CLUSTER_NAME') }}"
-      pythonFilename: "{{ kv('GCP_PYTHON_FILE_NAME') }}"

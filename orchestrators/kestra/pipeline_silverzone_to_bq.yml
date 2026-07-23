@@ -46,5 +46,3 @@ pluginDefaults:
       location: "{{ kv('GCP_LOCATION') }}"
       bucket: "{{ kv('GCP_BUCKET_NAME') }}"
       region: "{{ kv('GCP_REGION') }}"
-      clusterName: "{{ kv('GCP_CLUSTER_NAME') }}"
-      pythonFilename: "{{ kv('GCP_PYTHON_FILE_NAME') }}"

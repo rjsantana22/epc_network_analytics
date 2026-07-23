@@ -120,13 +120,13 @@ docker run -it -v raw_data:/app/data/raw --rm generate:python
 Then, open the Kestra UI at [http://localhost:8080](http://localhost:8080/) and execute:
 
 1. **`pipeline_load_to_gcs`** — starts the pipeline, triggerered every 15min, loads the synthetic events from the source data into GCS (Raw - Bronze zone).
-2. **`pipeline_spark_dataproc_gcs`** — These starts after `pipeline_load_to_gcs` flow, processed data from **Bronze zone** to **Silver zone** in **GCS**.
-3. **`pipeline_silverzone_to_bq`** — starts after `pipeline_spark_dataproc_gcs` flow, load the parquet file from **Silver zone** to tables in **Bigquery**.
+2. **`pipeline_spark_dataproc_gcs`** — Starts after `pipeline_load_to_gcs` flow, processes the data from **Bronze zone** to **Silver zone** in **GCS**.
+3. **`pipeline_silverzone_to_bq`** — starts after `pipeline_spark_dataproc_gcs` flow, loads the parquet files from the **Silver zone** to tables in **Bigquery**.
 4. **`pipeline_run_dbt`** — starts after `pipeline_silverzone_to_bq` flow, models the tables into fact, dimension, and report tables.
 
 ### 5. Look at the data in Looker Studio.
 
-Finally, you could connect to a Looker Studio, or any BI dashboard that you prefer. For this project, I built a dashboard and you can look in the following link:
+Finally, you could connect to a Looker Studio, or any BI dashboard that you prefer. For this project, I built a dashboard, which you can find at the following link:
 
 ```
 https://datastudio.google.com/reporting/dbedc84e-6f91-4e1a-9ec1-5407360297ff
@@ -140,7 +140,7 @@ https://datastudio.google.com/reporting/dbedc84e-6f91-4e1a-9ec1-5407360297ff
 epc_network_analytics/
 ├── dashboard/             # Description about dashboard.
 ├── datasets_generator/    # Synthetic EPC events network generator and DockerFile.
-├── epc_nw/                # dbt Core models (staging + marts).
+├── epc_nw/                # dbt Core models (staging + intermediate + marts).
 ├── spark/                 # Spark batch aggregation.
 ├── orchestrators/         # Kestra YAML workflow definitions.
 │   ├── kestra/            # YAML file of each flow.
@@ -152,33 +152,32 @@ epc_network_analytics/
 ---
 ## Dashboard
 
-I used Looker Studio to build a dashboard where I could elaborated some KPI and analytics over events. I think this a good application, because it has a excellent feature of drill-down, this allows us select a value or information in a graph or table, and then it filter in each element in the dashboard.
+I used Looker Studio to build a dashboard where I could put together some KPIs and analytics over the events. I think this is a great tool for this,because it has an excellent drill-down feature: it lets you select a value or a piece of information in a chart or table, and then it filters every other element in the dashboard accordingly.
 
 ### **EPC Network Analytics Report** 
-This dashboard is composed of two pages, where you can see the most important point of this data. 
+This dashboard is made up of two pages, where you can see the most important points of this data. 
 
-> Each page in this dashboard has two main filters, that are Temporal Analysis and Granular timestamp.
+> Each page in this dashboard has two main filters: Temporal Analysis and Granular timestamp.
 
 #### **EPC Control Plane Performance**
 
-This page is useful for troubleshooting because if there is a failure scenario present in the network, through the information that is here you could sectorize a cause.
+This page is useful for troubleshooting because when there's a failure scenario in the network, the information here helps you narrow down the cause.
 
 ##### Success and Failure Rate
 
 ![alt text](dashboard/success_and_failure_rate.png)
-We can look the successful and failure rate, this is very important because it is a basic indicator that give us a perception if there is a failure event at moment.
+Here we can see the success and failure rate. This is very important because it is a basic indicator that gives us aa sense of whether there's a failure event happening at a given moment.
 
 ##### Signalling Distribution by Cause Code
 
 ![alt text](dashboard/Signalling_Distribution_by_causecode.png)
-This graph present the distribution by different result of events, and group by cause code. This section, represents the different cause code base on the 3GPP Standard TS 23.401.
-
+This chart shows the distribution of events grouped by cause code. It represents the different cause codes based on the 3GPP standard TS 23.401.
 
 ##### APN-Level Connectivity Event Insights
 
 ![alt text](dashboard/APN-Level_Connectivity_event.png)
 
-This circle graph is excellent visualitzation, because represents the percent of events rate by APN(Access Point Name), this is a good indicator for Control Plane because you can understand each segmentation of traffic, type of service, and also if the proportion of Roamers or local subscribers. 
+This pie chart is a great visualization, because it shows the percentage of events by APN (Access Point Name). This is a good indicator for Control Plane, because it lets you understand traffic segmentation, type of service, and the proportion of roamers versus local subscribers.
 
 ##### Events Distribution Per PLMN
 
@@ -190,29 +189,28 @@ The previous chart gives a rough sense of the roamer-vs-local ratio, but it isn'
 
 ![alt text](dashboard/E-UTRAN_tracking_area_performance_metrics.png)
 
-Frecuently, it is important to sectorize events by RAN through Tracking area, enodeb and cell. So with this table we could look that information, where we can observe a little perfomance of each area through success and failure events, and total events.
+It's often important to break down events by RAN, through tracking area and cell id. This table lets us do that: we can see the performance of each area through its success and failure events, along with the total number of events.
 
 
 #### **Suscriber Event and Network Analytics Dashboard**
 
-This page is useful to constant monitored because here there are many KPI rate and could sectorize by event type.
+This page is useful for continuous monitoring, since it contains several KPIs that can be broken down by event type.
 
 ##### KPI
 ![alt text](dashboard/KPI_event_type.png)
 
-This section represents all event type that you will see in events logs. This is a rate by event type. This is excellent to look is there is anomalous behavior.
+This section shows every event type present in the event logs, as a rate per event type. It's great for spotting anomalous behavior.
 
 ##### Signalling Event Volumetric Trends
 
 ![alt text](dashboard/Signaling_event_volumetric_trends.png)
 
-The last section(KPI event type) is a cumulative KPI, this section represents the behavior over time.
-
+The previous section (KPI by event type) is a cumulative KPI. This section shows that same behavior over time.
 
 ##### Per-IMSI Control Plane Metrics
 ![alt text](dashboard/per-imsi_control_plane_metrics.png)
 
-This is a way to understand each event type, because here I represent the behavior of events by subscriber in a table with the top 10, this tells you which subscribers are the top offenders.
+This is another way to understand each event type: here I show the top 10 subscribers by event type in a table, which tells you which subscribers are the biggest offenders on the network for each event type.
 
 ---
 
@@ -220,7 +218,7 @@ This is a way to understand each event type, because here I represent the behavi
 
 This is a project of personal portfolio. If you have suggestions or find a bug, feel free to:
 
-1. To do Fork of this project.
+1. Fork this project.
 2. Create a branch with your feature (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push (`git push origin feature/AmazingFeature`)

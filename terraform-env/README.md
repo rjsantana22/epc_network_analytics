@@ -6,7 +6,7 @@ Terraform is used to create Google Cloud Storage (Datalake) and Bigquery (Wareho
 
 ![alt text](diagram_terraform.png)
 
-Execute the services that you define in main.tf
+Run the following commands to manage the resources defined in main.tf:
 
 ```Shell
 
@@ -22,7 +22,7 @@ terraform destroy # Destroy the configure that are in terraform.tfstate
 
 ## Connect with GCP
 
-Create a services Account, where need the following roles active:
+Create a services Account with the following roles enabled:
 - Storage Admin
 - Bigquery Admin
 - Compute Admin

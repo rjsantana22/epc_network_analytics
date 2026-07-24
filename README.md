@@ -28,10 +28,10 @@ EPC networks generate two broad categories of data: **Control Plane** (CP) and *
 
 Event and cause-code definitions follow multiple 3GPP specifications, depending on the interface and procedure being modeled:
 
-3GPP TS 23.401 — overall EPS/EPC architecture and procedure flows
-3GPP TS 24.301 — NAS cause codes for Attach and Service Request procedures
-3GPP TS 36.413 — S1AP cause codes for Handover and Paging procedures
-3GPP TS 23.003 — identifiers (ECGI, TAI) used to model cell and tracking area data
+- 3GPP TS 23.401 / overall EPS/EPC architecture and procedure flows.
+- 3GPP TS 24.301 / NAS cause codes for Attach and Service Request procedures.
+- 3GPP TS 36.413 / S1AP cause codes for Handover and Paging procedures.
+- 3GPP TS 23.003 / identifiers (ECGI, TAI) used to model cell and tracking area data.
 
 ## Problem
 
@@ -247,10 +247,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Synthetic Dataset inspired on:
 
-3GPP TS 23.401 — overall EPS/EPC architecture and procedure flows
-3GPP TS 24.301 — NAS cause codes for Attach and Service Request procedures
-3GPP TS 36.413 — S1AP cause codes for Handover and Paging procedures
-3GPP TS 23.003 — identifiers (ECGI, TAI) used to model cell and tracking area data
+- 3GPP TS 23.401 / overall EPS/EPC architecture and procedure flows
+- 3GPP TS 24.301 / NAS cause codes for Attach and Service Request procedures
+- 3GPP TS 36.413 / S1AP cause codes for Handover and Paging procedures
+- 3GPP TS 23.003 / identifiers (ECGI, TAI) used to model cell and tracking area data
 ---
 
 ⚠️ **Note:** This project uses synthetic data. It does not contain real or confidential information from any telecommunications network.

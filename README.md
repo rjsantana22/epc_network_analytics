@@ -8,7 +8,7 @@
 ![dbt-bigquery 1.11.3](https://img.shields.io/badge/dbt--bigquery-1.11.3-FF694B?style=flat&logo=dbt&logoColor=white)
 ![3GPP 23.401](https://img.shields.io/badge/3GPP-23.401-005B9F?style=flat&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status: In Development](https://img.shields.io/badge/status-in%20development-orange.svg)]()
 
@@ -92,7 +92,7 @@ All five layers are orchestrated by Kestra, which manages the flow from data gen
 
 - **Docker Desktop** installed and running, or **Docker in WSL**.
 - A **GCP Service Account** JSON key saved as `creds/gcp-key.json`
-- **Python** 3.10+ 
+- **Python** 3.12+ 
 - **Terraform**
 
 ### 1. Start Infrastructure

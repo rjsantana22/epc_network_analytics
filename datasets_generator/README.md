@@ -10,7 +10,7 @@ The script generates datasets that are used to analyze signaling events in mobil
 
 ## 🛠️ Tech Stack
 
-- **Language:** Python 3.10+
+- **Language:** Python 3.12+
 - **Dependency management:** uv
 - **Containerization:** Docker
 

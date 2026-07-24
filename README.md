@@ -245,7 +245,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 ## Acknowledgments
 
-- Synthetic Dataset inspired on:
+**Synthetic Dataset inspired on:**
 
 - 3GPP TS 23.401 / overall EPS/EPC architecture and procedure flows
 - 3GPP TS 24.301 / NAS cause codes for Attach and Service Request procedures

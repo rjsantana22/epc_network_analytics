@@ -6,7 +6,7 @@
 ![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white)
 ![Apache Spark](https://img.shields.io/badge/Apache%20Spark-E25A1C?style=flat&logo=apachespark&logoColor=white)
 ![dbt-bigquery 1.11.3](https://img.shields.io/badge/dbt--bigquery-1.11.3-FF694B?style=flat&logo=dbt&logoColor=white)
-![3GPP TS 23.401](https://img.shields.io/badge/3GPP_TS_23.401-EPS%20/%20EPC_Architecture-1A5276?style=flat-square)
+![3GPP TS 23.401](https://img.shields.io/badge/3GPP_TS_23.401-EPS%20/%20EPC_Architecture-1A5276?style=flat)
 ![3GPP TS 24.301](https://img.shields.io/badge/3GPP_TS_24.301-NAS_Cause_Codes-1A5276?style=flat-square)
 ![3GPP TS 36.413](https://img.shields.io/badge/3GPP_TS_36.413-S1AP_Cause_Codes-1A5276?style=flat-square)
 ![3GPP TS 23.003](https://img.shields.io/badge/3GPP_TS_23.003-Network_Identifiers-1A5276?style=flat-square)

@@ -64,9 +64,6 @@ def run_process():
     print(f"¡Éxito! Total de filas cargadas (epc_network): {df_epc_network.count()}")
     print("Columnas originales:", df_epc_network.columns)
 
-    # Filas que no matchean el schema quedan en _corrupt_record en vez de convertirse
-    # silenciosamente en nulls. Se descartan del output; si querés inspeccionarlas más
-    # adelante, es tan simple como escribir el complemento de este filter a otro path.
 
     df_valid = df_epc_network.withColumn('timestamp', F.to_timestamp(F.col('timestamp'), "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"))
 

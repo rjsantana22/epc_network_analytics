@@ -34,7 +34,7 @@ models:
           - relationships:
               arguments:
                 to: ref('dim_area')
-              field: area_key
+                field: area_key
       - name: plmn_key
         data_tests:
           - not_null
